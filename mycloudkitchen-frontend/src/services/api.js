@@ -1,0 +1,54 @@
+import axios from 'axios';
+import { API_BASE_URL } from '../utils/constants';
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor to add auth token
+api.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      
+      // Log requests in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`${config.method?.toUpperCase()} ${config.url}`, config.data);
+      }
+      
+      return config;
+    },
+    (error) => {
+      console.error('Request error:', error);
+      return Promise.reject(error);
+    }
+  );
+  
+  // Response interceptor to handle errors
+  api.interceptors.response.use(
+    (response) => {
+      // Log responses in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Response from ${response.config.url}:`, response.data);
+      }
+      return response;
+    },
+    (error) => {
+      console.error('API Error:', error.response?.data || error.message);
+      
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+      
+      return Promise.reject(error);
+    }
+  );
+  
+  export default api;

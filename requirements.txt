@@ -1,0 +1,13 @@
+fastapi==0.116.0
+passlib==1.7.4
+pydantic==2.11.7
+pydantic_settings==2.10.1
+python_jose==3.3.0
+Requests==2.32.4
+SQLAlchemy==2.0.23
+stripe==7.6.0
+twilio==9.6.3
+uvicorn==0.35.0
+psycopg2-binary
+email-validator
+python-multipart

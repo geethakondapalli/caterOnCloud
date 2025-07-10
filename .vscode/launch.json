@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: App Debug",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/main.py",  // or your actual entry point
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}",  // 👈 Ensures app is on the Python path
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"  // Optional but helpful
+        }
+      }
+    ]
+  }
