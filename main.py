@@ -18,7 +18,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # React development server
         "http://127.0.0.1:3000",
-        "https://distinguished-art.railway.internal"
+        "https://distinguished-art.railway.internal",
         "https://frontend-production-6ab1.up.railway.app"  # Your production domain
     ],  # Configure this properly for production
     allow_credentials=True,
