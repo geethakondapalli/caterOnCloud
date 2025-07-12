@@ -28,7 +28,7 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     salt = generate_salt()
     hashed_password = get_password_hash(user.password + salt)
    
-    # Create new user (caterer_id will be auto-generated)
+    # Create new user (caterer_id will be auto-generated) 
     db_user = User(
         email=user.email,
         password=hashed_password,
