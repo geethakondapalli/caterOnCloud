@@ -70,7 +70,7 @@ const IntroPage = () => {
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
-    if (!reviewForm.name || !reviewForm.review || !reviewForm.email) {
+    if (!reviewForm.name || !reviewForm.review_text || !reviewForm.email) {
         alert('Please fill in all required fields.');
         return;
     }

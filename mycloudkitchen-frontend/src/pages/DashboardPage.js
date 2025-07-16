@@ -77,7 +77,7 @@ const DashboardPage = () => {
     const totalOrders = orders.length;
     const pendingOrders = orders.filter(o => o.status === 'pending').length;
     const totalRevenue = orders
-      .filter(o => o.status === 'delivered')
+      .filter(o => o.payment_status === 'completed')
       .reduce((sum, o) => sum + parseFloat(o.total), 0);
     const activeMenus = menus.filter(m => m.active).length;
 

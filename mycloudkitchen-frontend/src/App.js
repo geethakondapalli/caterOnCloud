@@ -27,6 +27,8 @@ import ManageOrdersPage from './pages/ManageOrdersPage';
 import FeaturedMenus from './pages/FeaturedMenus';
 import ManagePayments from './pages/ManagePayments';
 import MyOrdersPage from './pages/MyOrdersPage';
+import AdminReviewManagement from './pages/AdminReviewManagement';
+import AdminInquiryManagement from './pages/AdminInquiryManagement';
 
 // Component to handle conditional header rendering
 const ConditionalHeader = () => {
@@ -71,6 +73,8 @@ function App() {
                 <Route path="/featured-menus" element={<ProtectedRoute requiredRole="caterer"><FeaturedMenus /></ProtectedRoute>} />
                 <Route path="/myorders" element={<ProtectedRoute requiredRole="caterer"><MyOrdersPage /></ProtectedRoute>} />
                 <Route path="/manage-payments" element={<ProtectedRoute requiredRole="caterer"><ManagePayments /></ProtectedRoute>} />
+                <Route path="/manage-reviews" element={<ProtectedRoute requiredRole="caterer"><AdminReviewManagement /></ProtectedRoute>} />
+                <Route path="/manage-inquiry" element={<ProtectedRoute requiredRole="caterer"><AdminInquiryManagement /></ProtectedRoute>} />
                 
 
               </Routes>

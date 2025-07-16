@@ -15,11 +15,11 @@ export const reviewService= {
     return response.data;
   },
   approveReview : async (review_id) => {
-    const response = await api.put(`/review/{review_id}/approve`, review_id );
+    const response = await api.put(`/review/${review_id}/approve`, review_id );
     return response.data;
   },
   deleteReview: async (review_id) => {
-    const response = await api.delete(`/review/{review_id}/delete`, review_id );
+    const response = await api.delete(`/review/${review_id}/delete`, review_id );
     return response.data;
   },
   getReviewStats: async () => {

@@ -50,6 +50,34 @@ def get_scheduled_menus(
     menus = query.offset(skip).limit(limit).all()
     return menus
 
+@router.get("/scheduled/inactive", response_model=List[ScheduledMenuResponse])
+def get_scheduled_menus(
+    skip: int = 0,
+    limit: int = 100,
+    date_filter: Optional[str] = None,  # YYYY-MM-DD
+    caterer_id: Optional[int] = None,
+    db: Session = Depends(get_db)
+):
+    from app.models.menu import ScheduledMenu
+    
+    query = db.query(ScheduledMenu)
+    
+    if date_filter:
+        try:
+            filter_date = date.fromisoformat(date_filter)
+            query = query.filter(ScheduledMenu.menu_date == filter_date)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+    
+    if caterer_id:
+        query = query.filter(ScheduledMenu.caterer_id == caterer_id)
+    
+    query = query.filter(ScheduledMenu.active == False)
+    query = query.order_by(ScheduledMenu.menu_date.desc())
+    
+    menus = query.offset(skip).limit(limit).all()
+    return menus
+
 @router.get("/scheduled/my", response_model=List[ScheduledMenuResponse])
 def get_my_scheduled_menus(
     current_user = Depends(get_current_caterer),
@@ -58,8 +86,7 @@ def get_my_scheduled_menus(
     from app.models.menu import ScheduledMenu
     
     menus = db.query(ScheduledMenu).filter(
-        ScheduledMenu.caterer_id == current_user.caterer_id,
-        ScheduledMenu.active == True
+        ScheduledMenu.caterer_id == current_user.caterer_id
     ).order_by(ScheduledMenu.menu_date.desc()).all()
     
     return menus    

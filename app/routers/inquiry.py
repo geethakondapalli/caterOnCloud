@@ -95,7 +95,7 @@ def get_inquiry(
     
     return inquiry
 
-@router.put("/{inquiry_id}/status", response_model=InquiryResponse)
+@router.put("/update/{inquiry_id}", response_model=InquiryResponse)
 def update_inquiry_status(
     inquiry_id: int,
     status_update: InquiryStatusUpdate,

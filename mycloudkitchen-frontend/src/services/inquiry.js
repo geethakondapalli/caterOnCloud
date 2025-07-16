@@ -9,5 +9,9 @@ export const inquiryService= {
     const response = await api.get('/inquiry/allinquiries');
     return response.data;
   },
-  
+  updateInquiry: async (inquiry_id,inquiryData) => {
+    const response = await api.put(`/inquiry/update/${inquiry_id}`, inquiryData);
+    return response.data;
+  },
+
 }

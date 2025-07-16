@@ -22,6 +22,16 @@ export const menuService = {
     }
   },
 
+  getScheduledInactiveMenus: async (params = {}) => {
+    try {
+      const response = await api.get('/menu/scheduled/inactive', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error loading scheduled menus:', error);
+      throw error;
+    }
+  },
+
   getScheduledMenu: async (menuId) => {
     try {
       const response = await api.get(`/menu/scheduled/${menuId}`);

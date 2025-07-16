@@ -19,14 +19,11 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-orange-600">
+          <Link to="/dashboard" className="text-2xl font-bold text-orange-600">
             Caterer Name  
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/browsemenu" className="text-gray-700 hover:text-orange-600">
-              Browse Menus
-            </Link>
             
             {isCaterer && isAuthenticated && (
               <div className="relative group">
@@ -44,7 +41,7 @@ const Header = () => {
                     Manage Reviews
                   </Link>
                   <Link 
-                    to="/manage-inquiries" 
+                    to="/manage-inquiry" 
                     className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
                   >
                     Manage Inquiries
