@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Search, Filter, DollarSign, Clock, User, Phone, MapPin, PoundSterling,CheckCircle } from 'lucide-react';
+import { Calendar, Search, Filter, Clock, User, Phone, MapPin, PoundSterling,CheckCircle } from 'lucide-react';
 import { paymentService } from '../services/payments';
 import { orderService } from '../services/orders';
 
@@ -20,7 +20,8 @@ const ManagePayments = () => {
   const fetchPayments = async () => {
     setLoading(true);
     try {
-      const data = await paymentService.getPaymentsByMenuDate(selectedMenuDate);
+      //const data = await paymentService.getPaymentsByMenuDate(selectedMenuDate);
+      const data = await paymentService.getPayments();
       setPayments(data);
       setRefreshKey(prev => prev + 1);
     } catch (error) {
