@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Package, Edit, Trash2, Plus, Search, Filter, DollarSign, Clock, Star } from 'lucide-react';
+import { menuService } from '../../services/menu';
 
 const VerticalCatalogGrid = ({ catalogItems ,onAddToMenu}) => {
   // Mock data - replace with your actual data
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
 
   // Get unique categories
   const categories = [...new Set(catalogItems.map(item => item.category))].filter(Boolean);
@@ -17,13 +19,6 @@ const VerticalCatalogGrid = ({ catalogItems ,onAddToMenu}) => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleEdit = (item) => {
-    console.log('Edit item:', item);
-  };
-
-  const handleDelete = (item) => {
-    console.log('Delete item:', item);
-  };
 
 
 
@@ -57,8 +52,6 @@ const VerticalCatalogGrid = ({ catalogItems ,onAddToMenu}) => {
                     <CatalogItemCard
                       key={item.menu_item_id}
                       item={item}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
                       onAddToMenu={onAddToMenu}
                     />
                   ))}
@@ -91,8 +84,6 @@ const VerticalCatalogGrid = ({ catalogItems ,onAddToMenu}) => {
                     <CatalogItemCard
                       key={item.menu_item_id}
                       item={item}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
                       onAddToMenu={onAddToMenu}
                     />
                   ))}
@@ -159,7 +150,7 @@ const VerticalCatalogGrid = ({ catalogItems ,onAddToMenu}) => {
   );
 };
 
-const CatalogItemCard = ({ item, onEdit, onDelete, onAddToMenu }) => {
+const CatalogItemCard = ({ item, onAddToMenu }) => {
     const [showDetails, setShowDetails] = useState(false);
     const handleAddToMenu = (catalogItem) => {
         onAddToMenu(catalogItem); // This should NOT trigger form submission
@@ -244,22 +235,6 @@ const CatalogItemCard = ({ item, onEdit, onDelete, onAddToMenu }) => {
                   }`}
                 >
                   Add to Menu
-                </button>
-                
-                <button
-                  onClick={() => onEdit(item)}
-                  className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                  title="Edit"
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                
-                <button
-                  onClick={() => onDelete(item)}
-                  className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                  title="Delete"
-                >
-                  <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             </div>

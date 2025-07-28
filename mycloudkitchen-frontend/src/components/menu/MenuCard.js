@@ -1,11 +1,11 @@
 import React from 'react';
 import { Calendar, MapPin, Star, Clock } from 'lucide-react';
 import { format } from 'date-fns';
-import { useCart } from '../../context/CartContext';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { menuService } from '../../services/menu';
 
 const MenuCard = ({ menu }) => {
-  const { addToCart } = useCart();
   const { isCaterer } = useAuth();
 
 
@@ -106,12 +106,28 @@ const MenuCard = ({ menu }) => {
         </div>
         
         <div className="flex items-center">
-          {!isCaterer && menu.active && (
+        {isCaterer && menu.active && (
             <button
-              onClick={() => window.open(menu.orderlink, '_blank', 'noopener,noreferrer')}
+              onClick={() => {
+                const fullOrderLink = `${window.location.origin}${menu.orderlink}`;
+                navigator.clipboard.writeText(fullOrderLink).then(() => {
+                  // Optional: Show a temporary success message
+                  alert('Order link copied to clipboard!');
+                }).catch(err => {
+                  console.error('Failed to copy: ', err);
+                  // Fallback for older browsers
+                  const textArea = document.createElement('textarea');
+                  textArea.value = fullOrderLink;
+                  document.body.appendChild(textArea);
+                  textArea.select();
+                  document.execCommand('copy');
+                  document.body.removeChild(textArea);
+                  alert('Order link copied to clipboard!');
+                });
+              }}
               className="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 transition-colors"
             >
-              Place Order
+              Copy Order Link
             </button>
           )}
         </div>
@@ -126,6 +142,34 @@ const MenuCard = ({ menu }) => {
       {/* Footer */}
       <div className="p-4 bg-gray-50 border-t">
         <div className="flex justify-between items-center">
+        <button
+            onClick={async () => {
+              try {
+                const newStatus = !menu.active;
+                
+                // Check if trying to activate a backdated menu
+                if (newStatus && new Date(menu.menu_date) < new Date().setHours(0,0,0,0)) {
+                  toast.error('Cannot activate menu for past dates');
+                  return;
+                }
+              
+                await menuService.updateScheduledMenuStatus(menu.menu_id, { active: newStatus });
+                menu.active = newStatus; // Update local state
+                toast.success(`Menu ${newStatus ? 'activated' : 'deactivated'}`);
+              } catch (error) {
+                toast.error('Failed to update menu status');
+                console.error('Menu status update error:', error);
+              }
+            }}
+            disabled={!menu.active && new Date(menu.menu_date) < new Date().setHours(0,0,0,0)}
+            className={`text-sm transition-colors ${
+              !menu.active && new Date(menu.menu_date) < new Date().setHours(0,0,0,0)
+                ? 'text-gray-400 cursor-not-allowed'
+                : 'text-gray-600 hover:text-gray-700'
+            }`}
+          >
+            {menu.active ? 'Deactivate' : 'Activate'}
+          </button>
         </div>
       </div>
     </div>

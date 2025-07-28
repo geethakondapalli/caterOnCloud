@@ -239,16 +239,16 @@ const DashboardPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 {menus.map(menu => {
-  // Calculate order statistics for this menu
-  const menuOrders = orders.filter(order => 
-    order.menu_id === menu.menu_id || 
-    order.menu_date === menu.menu_date ||
-    order.menu_item?.menu_id === menu.menu_id
-  );
-  
-  const totalOrders = menuOrders.length;
-  const totalRevenue = menuOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
-  
+                  // Calculate order statistics for this menu
+                  const menuOrders = orders.filter(order => 
+                    order.menu_id === menu.menu_id || 
+                    order.menu_date === menu.menu_date ||
+                    order.menu_item?.menu_id === menu.menu_id
+                  );
+                  console.log(`Menu ${menu.menu_id} has ${menuOrders.length} orders`);                
+                  const totalOrders = menuOrders.length;
+                  const totalRevenue = menuOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+                  
   // Calculate individual item portions needed for preparation (including combo breakdowns)
   const calculateItemPortions = () => {
     const itemPortions = {};

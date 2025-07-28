@@ -487,7 +487,7 @@ const MenuPage = () => {
 
 
         {/* Debug Info (remove in production) */}
-        {process.env.NODE_ENV === 'development' && (
+         {process.env.NODE_ENV === 'development' && (
           <div className="mt-12 bg-gray-100 rounded-lg p-6">
             <details>
               <summary className="cursor-pointer font-medium text-gray-700 mb-4">

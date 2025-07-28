@@ -84,12 +84,7 @@ const Header = () => {
                   </svg>
                 </button>
                 <div className="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                  <Link 
-                    to="/menu-catalog" 
-                    className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
-                  >
-                    Menu Items Catalog
-                  </Link>
+                  
                   <Link 
                     to="/scheduled-menu" 
                     className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
@@ -102,6 +97,13 @@ const Header = () => {
                   >
                     Featured Menus 
                   </Link>
+                  <Link 
+                    to="/menu-catalog" 
+                    className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                  >
+                    Menu Items Catalog
+                  </Link>
+
                 </div>
               </div>
             )}

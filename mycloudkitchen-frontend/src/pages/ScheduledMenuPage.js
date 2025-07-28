@@ -3,6 +3,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { menuService } from '../services/menu';
 import { useAuth } from '../context/AuthContext';
+import FlyerGenerator from '../components/menu/FlyerGenerator';
 import { 
   Plus, 
   Minus, 
@@ -22,15 +23,29 @@ import {
 import toast from 'react-hot-toast';
 import VerticalCatalogGrid from '../components/menu/VerticalCatalogGrid';
 
+const customerTemplate = {
+  businessName: "Resturant Name",
+  logo: "🍛",
+  colors: {
+    primary: "#ff6b35",
+    secondary: "#2c3e50", 
+    accent: "#f39c12"
+  },
+  contact: {
+    phone: "(555) 123-4567",
+    address: "123 Main Street, City",
+    website: "www.spicegarden.com"
+  },
+  layout: "classic" // classic, modern, minimal
+};
+
 const ScheduledMenuPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [catalogItems, setCatalogItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [uploadLoading, setUploadLoading] = useState(false);
-  const [showFlyerUpload, setShowFlyerUpload] = useState(false);
-  const [extractedItems, setExtractedItems] = useState([]);
   const [createdMenu, setCreatedMenu] = useState(null);
+  const [showFlyerModal, setShowFlyerModal] = useState(false);
 
   const { register, control, handleSubmit, setValue, watch, formState: { errors } } = useForm({
     defaultValues: {
@@ -84,70 +99,6 @@ const ScheduledMenuPage = () => {
     }
   };
 
-  const addCustomItem = () => {
-    appendItem({
-      catalog_item_id: null,
-      item_name: '',
-      description: '',
-      price: 0,
-      category: '',
-      is_combo: false,
-      combo_items: null
-    });
-  };
-
-  const addComboItem = () => {
-    appendItem({
-      catalog_item_id: null,
-      item_name: '',
-      description: '',
-      price: 0,
-      category: 'Combo Deals',
-      is_combo: true,
-      combo_items: []
-    });
-  };
-
-  const handleFlyerUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setUploadLoading(true);
-    try {
-      const result = await menuService.uploadMenuFlyer(
-        file,
-        watch('name'),
-        watch('menu_date')
-      );
-
-      setExtractedItems(result.parsed_items);
-      setValue('name', result.suggested_menu_name);
-      setValue('menu_date', result.suggested_date);
-      
-      toast.success('Menu flyer processed successfully!');
-      setShowFlyerUpload(false);
-    } catch (error) {
-      toast.error('Failed to process menu flyer');
-    } finally {
-      setUploadLoading(false);
-    }
-  };
-
-  const importExtractedItems = () => {
-    extractedItems.forEach(item => {
-      appendItem({
-        catalog_item_id: null,
-        item_name: item.item_name,
-        description: item.description,
-        price: item.price,
-        category: item.category,
-        is_combo: item.is_combo,
-        combo_items: null
-      });
-    });
-    setExtractedItems([]);
-    toast.success(`Imported ${extractedItems.length} items from flyer`);
-  };
 
   const onSubmit = async (data) => {
     if (data.items.length === 0) {
@@ -173,6 +124,8 @@ const ScheduledMenuPage = () => {
     navigator.clipboard.writeText(orderLink);
     toast.success('Order link copied to clipboard!');
   };
+
+
 
   // Success Screen
   if (createdMenu) {
@@ -206,7 +159,24 @@ const ScheduledMenuPage = () => {
               >
                 <Copy className="h-4 w-4" />
               </button>
+              
             </div>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="text-sm text-gray-600 mb-2">
+            <button 
+                  onClick={() => setShowFlyerModal(true)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md">
+                    Generate Flyer
+              </button>
+                <FlyerGenerator
+                  isOpen={showFlyerModal}
+                  onClose={() => setShowFlyerModal(false)}
+                  menu={createdMenu}
+                  template={customerTemplate}
+                />
+              </div>
+            
           </div>
 
           <div className="space-y-3">
@@ -237,11 +207,10 @@ const ScheduledMenuPage = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Scheduled Menu</h1>
-          <p className="text-gray-600">Build your menu from catalog items or upload a menu flyer</p>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Create Scheduled Menu</h1>
+          <p className="text-gray-600">Build your menu from catalog items</p>
         </div>
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Info */}
           <div className="bg-white rounded-lg shadow-sm p-6">
@@ -430,129 +399,9 @@ const ScheduledMenuPage = () => {
           </div>
         </form>
           {/* Catalog Items */}
-
-
-          <VerticalCatalogGrid catalogItems={catalogItems} onAddToMenu={addItemFromCatalog}/> 
-          
-
-          {/* Extracted Items from Flyer */}
-          {extractedItems.length > 0 && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Extracted Items from Flyer</h2>
-                <button
-                  type="button"
-                  onClick={importExtractedItems}
-                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
-                >
-                  Import All Items
-                </button>
-              </div>
-              
-              <div className="space-y-2">
-                {extractedItems.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <div className="flex-1">
-                      <span className="font-medium">{item.item_name}</span>
-                      <span className="ml-2 text-orange-600 font-bold">£{item.price.toFixed(2)}</span>
-                      {item.category && (
-                        <span className="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">{item.category}</span>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        appendItem(item);
-                        setExtractedItems(prev => prev.filter((_, i) => i !== index));
-                        toast.success(`Added ${item.item_name}`);
-                      }}
-                      className="text-green-600 hover:bg-green-50 p-2 rounded transition-colors"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+        
+        <VerticalCatalogGrid catalogItems={catalogItems} onAddToMenu={addItemFromCatalog}/>   
  
-          {/* Upload Options */}
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Add Menu Items</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <button
-                type="button"
-                onClick={() => setShowFlyerUpload(true)}
-                className="flex items-center justify-center p-4 border-2 border-dashed border-orange-300 rounded-lg hover:border-orange-400 hover:bg-orange-50 transition-colors"
-              >
-                <Upload className="h-6 w-6 text-orange-600 mr-2" />
-                <span className="text-orange-600 font-medium">Upload Menu Flyer</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={addCustomItem}
-                className="flex items-center justify-center p-4 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-              >
-                <Plus className="h-6 w-6 text-blue-600 mr-2" />
-                <span className="text-blue-600 font-medium">Add Custom Item</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={addComboItem}
-                className="flex items-center justify-center p-4 border-2 border-dashed border-green-300 rounded-lg hover:border-green-400 hover:bg-green-50 transition-colors"
-              >
-                <Package className="h-6 w-6 text-green-600 mr-2" />
-                <span className="text-green-600 font-medium">Add Combo Deal</span>
-              </button>
-            </div>
-          </div>
-          {/* Submit Button */}
-
-
-        {/* Upload Modal */}
-        {showFlyerUpload && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-              <div className="flex items-center justify-between p-6 border-b">
-                <h2 className="text-xl font-semibold text-gray-900">Upload Menu Flyer</h2>
-                <button
-                  onClick={() => setShowFlyerUpload(false)}
-                  className="p-2 hover:bg-gray-100 rounded-md transition-colors"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="p-6">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Select Menu Flyer Image
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFlyerUpload}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                  />
-                  <p className="mt-1 text-xs text-gray-500">
-                    Upload JPG, PNG, or other image formats. We'll extract menu items automatically.
-                  </p>
-                </div>
-
-                {uploadLoading && (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
-                    <span className="ml-3 text-gray-600">Processing flyer...</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
