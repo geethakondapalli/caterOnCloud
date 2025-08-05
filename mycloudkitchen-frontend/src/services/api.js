@@ -3,7 +3,7 @@ import axios from 'axios';
 export const API_BASE_URL = process.env.REACT_APP_API_URL 
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL|| process.env.REACT_APP_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -21,6 +21,12 @@ api.interceptors.request.use(
       if (process.env.NODE_ENV === 'development') {
         console.log(`${config.method?.toUpperCase()} ${config.url}`, config.data);
       }
+
+      if (process.env.NODE_ENV === 'production' && !api.baseURL.startsWith('https://')) {
+        console.warn('⚠️ Forcing HTTPS for production environment');
+        api.baseURL = api.baseURL.replace('http://', 'https://');
+      }
+      
       
       return config;
     },

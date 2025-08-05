@@ -24,5 +24,5 @@ export const paymentService = {
   getPaymentsByMenuDate: async (menu_date) => {
     const response = await api.get(`/payments/${menu_date}`)
     return response.data;
-  }
+  },
 };
