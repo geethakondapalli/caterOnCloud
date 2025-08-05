@@ -11,13 +11,13 @@ import { set } from 'date-fns';
 
 const DashboardPage = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('menus');
   const [menus, setMenus] = useState([]);
   const [orders, setOrders] = useState([]);
   const [showMenuForm, setShowMenuForm] = useState(false);
   const [editingMenu, setEditingMenu] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadDashboardData();
@@ -29,6 +29,7 @@ const DashboardPage = () => {
         menuService.getScheduledMenus(),
         orderService.getOrders()
       ]);
+
       setMenus(menusData);
       setOrders(ordersData);
     } catch (error) {
@@ -154,9 +155,10 @@ const DashboardPage = () => {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8 px-6">
               {[
-                { id: 'overview', label: 'Overview' },
-                { id: 'orders', label: 'Orders' },
                 { id: 'menus', label: 'Menus' }
+                /*{ id: 'overview', label: 'Overview' },
+                { id: 'orders', label: 'Orders' }*/
+                
               ].map(tab => (
                 <button
                   key={tab.id}
@@ -241,9 +243,10 @@ const DashboardPage = () => {
                 {menus.map(menu => {
                   // Calculate order statistics for this menu
                   const menuOrders = orders.filter(order => 
-                    order.menu_id === menu.menu_id || 
-                    order.menu_date === menu.menu_date ||
-                    order.menu_item?.menu_id === menu.menu_id
+                    order.menu_id === menu.menu_id &&
+                    order.menu_date === menu.menu_date && 
+                    order.status !== 'cancelled'
+        
                   );
                   console.log(`Menu ${menu.menu_id} has ${menuOrders.length} orders`);                
                   const totalOrders = menuOrders.length;
@@ -463,10 +466,8 @@ const DashboardPage = () => {
         {/* View Orders Button */}
         {totalOrders > 0 && (
           <button
-            onClick={() => {
-              // Navigate to orders page with this menu filter
-              console.log('View orders for menu:', menu.menu_id);
-            }}
+            onClick={ () => navigate('/myorders?menudate=' + menu.menu_date)
+            }
             className="text-sm text-blue-600 hover:text-blue-700"
           >
             View Orders ({totalOrders})

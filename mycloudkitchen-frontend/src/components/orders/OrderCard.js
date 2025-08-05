@@ -161,7 +161,7 @@ const OrderCard = ({ order, onStatusUpdate, userRole }) => {
           <div className="flex items-start">
           <span> Payment Status</span>
           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.payment_status)}`}>
-            {order.status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
+            {order.payment_status}
           </span>
           </div>
           </div>

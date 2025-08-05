@@ -20,8 +20,8 @@ const ManagePayments = () => {
   const fetchPayments = async () => {
     setLoading(true);
     try {
-      //const data = await paymentService.getPaymentsByMenuDate(selectedMenuDate);
-      const data = await paymentService.getPayments();
+      const data = await paymentService.getPaymentsByMenuDate(selectedMenuDate);
+      //const data = await paymentService.getPayments();
       setPayments(data);
       setRefreshKey(prev => prev + 1);
     } catch (error) {
@@ -89,7 +89,7 @@ const ManagePayments = () => {
     const matchesStatus = statusFilter === 'all' || payment.payment_status === statusFilter;
     const matchesMethod = methodFilter === 'all' || payment.payment_method === methodFilter;
   
-    return matchesSearch && matchesStatus && matchesMethod;
+    return matchesSearch && matchesStatus && matchesMethod ;
   });
 
   const formatCurrency = (amount) => {

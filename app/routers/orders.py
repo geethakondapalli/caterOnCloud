@@ -185,11 +185,12 @@ def _is_valid_status_transition(current_status: str, new_status: str) -> bool:
     Order flow: pending -> confirmed -> preparing -> ready for delivery -> delivered
     """
     valid_transitions = {
-        "pending": ["confirmed"],
-        "confirmed": ["preparing"],
+        "pending": ["confirmed" ,"cancelled"],
+        "confirmed": ["preparing","cancelled"],
         "preparing": ["ready for delivery"],
         "ready for delivery": ["delivered"],
-        "delivered": []  # No further transitions allowed
+        "delivered": [], # No further transitions allowed
+        "cancelled": [] # No further transitions allowed
     }
     
     return new_status in valid_transitions.get(current_status, [])

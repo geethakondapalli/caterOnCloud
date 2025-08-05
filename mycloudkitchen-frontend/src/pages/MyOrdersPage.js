@@ -5,9 +5,11 @@ import { orderService } from '../services/orders'; // Adjust import path as need
 import { ORDER_STATUS } from '../utils/constants'; // Adjust import path as needed
 import { Search, Filter, Calendar, Package, AlertCircle, Grid3X3, List, Eye, Phone, Mail, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
+import { useSearchParams } from 'react-router-dom';
 
 const MyOrdersPage = () => {
     const { user, userRole } = useAuth();
+    const [searchParams] = useSearchParams();
     const [orders, setOrders] = useState([]);
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,15 +18,49 @@ const MyOrdersPage = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
     const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
-    const [selectedMenuDate, setSelectedMenuDate] = useState(new Date().toISOString().split('T')[0]);
+    //const [selectedMenuDate, setSelectedMenuDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedMenuDate, setSelectedMenuDate] = useState(() => {
+      const urlMenuDate = searchParams.get('menudate');
+      return urlMenuDate || new Date().toISOString().split('T')[0];
+  });
+
+  useEffect(() => {
+    const urlMenuDate = searchParams.get('menudate');
+    
+    if (urlMenuDate) {
+        // If URL has menudate, update state and fetch
+        if (urlMenuDate !== selectedMenuDate) {
+            setSelectedMenuDate(urlMenuDate);
+            //fetchOrders(); // Fetch orders for the new date
+            // fetchOrders will be called by the next useEffect when selectedMenuDate changes
+        } else {
+            // Same date, just fetch
+            //fetchOrders();
+        }
+    } else {
+        // No URL param, fetch with current date
+        //fetchOrders();
+    }
+}, [searchParams]); // Runs when URL params change
+
+// Fetch orders when selectedMenuDate changes
+useEffect(() => {
+    fetchOrders();
+}, [selectedMenuDate]);
+
+// ADD THIS: Helper to check if we're filtering by URL params
+const isFilteredByUrl = searchParams.get('menudate');
+
+// ADD THIS: Clear URL filters and reset to today
+const clearUrlFilters = () => {
+  // Clear URL params without navigation
+  window.history.replaceState({}, '', '/myorders');
+  setSelectedMenuDate(new Date().toISOString().split('T')[0]);
+};
   
-    // Fetch orders on component mount
-    useEffect(() => {
-      fetchOrders();
-    }, [selectedMenuDate]);
   
     // Filter and sort orders when dependencies change
-    useEffect(() => {
+  useEffect(() => {
       filterAndSortOrders();
     }, [orders, searchTerm, statusFilter, sortBy]);
   
@@ -227,7 +263,13 @@ const MyOrdersPage = () => {
                 <input
                   type="date"
                   value={selectedMenuDate}
-                  onChange={(e) => setSelectedMenuDate(e.target.value)}
+                  onChange={(e) => {
+                              setSelectedMenuDate(e.target.value);
+                              if (isFilteredByUrl) {
+                                window.history.replaceState({}, '', '/myorders');
+                              }
+                              }
+                  }
                   className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

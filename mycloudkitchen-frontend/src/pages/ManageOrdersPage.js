@@ -7,7 +7,9 @@ import {
   Clock, CheckCircle, XCircle, Truck, ChefHat
 } from 'lucide-react';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 import { ORDER_STATUS } from '../utils/constants'; // Adjust import path as needed
+import { getNextStatus } from '../utils/constants'; // Adjust import path as needed
 
 const ManageOrdersPage = () => {
   const { user, userRole } = useAuth();
@@ -17,31 +19,34 @@ const ManageOrdersPage = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [selectedOrders, setSelectedOrders] = useState(new Set());
   const [bulkAction, setBulkAction] = useState('');
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [processing, setProcessing] = useState(false);
-
+  const [selectedMenuDate, setSelectedMenuDate] = useState(new Date().toISOString().split('T')[0]);
+  
   // Fetch orders on component mount
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [selectedMenuDate]);
 
   // Filter and sort orders when dependencies change
   useEffect(() => {
     filterAndSortOrders();
-  }, [orders, searchTerm, statusFilter, dateFilter, sortBy]);
+  }, [orders, searchTerm, statusFilter, selectedMenuDate, sortBy]);
+  
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await orderService.getOrders({
+      const response = await orderService.getOrdersbyMenuDate({
         include_details: true,
         sort: 'order_date',
+        menu_date: selectedMenuDate,
         order: 'desc'
       });
+
       setOrders(response.data || response || []);
       setError(null);
     } catch (err) {
@@ -71,31 +76,6 @@ const ManageOrdersPage = () => {
     }
 
     // Apply date filter
-    if (dateFilter !== 'all') {
-      const today = new Date();
-      const filterDate = new Date();
-      
-      switch (dateFilter) {
-        case 'today':
-          filterDate.setHours(0, 0, 0, 0);
-          filtered = filtered.filter(order => 
-            new Date(order.order_date) >= filterDate
-          );
-          break;
-        case 'week':
-          filterDate.setDate(today.getDate() - 7);
-          filtered = filtered.filter(order => 
-            new Date(order.order_date) >= filterDate
-          );
-          break;
-        case 'month':
-          filterDate.setMonth(today.getMonth() - 1);
-          filtered = filtered.filter(order => 
-            new Date(order.order_date) >= filterDate
-          );
-          break;
-      }
-    }
 
     // Apply sorting
     filtered.sort((a, b) => {
@@ -130,6 +110,22 @@ const ManageOrdersPage = () => {
     setSelectedOrders(newSelected);
   };
 
+  const handleStatusUpdate = (order,newStatus) => {
+    
+      try {
+        const orderId = order.order_id;
+        orderService.updateOrderStatus(orderId, { status: newStatus});
+        setOrders(orders.map(order => 
+          order.order_id === orderId 
+            ? { ...order, status: newStatus }
+            : order
+        ));
+        toast.success('Order status updated');
+      } catch (error) {
+        toast.error('Failed to update order status');
+      }
+    
+  };
   const handleSelectAll = () => {
     if (selectedOrders.size === filteredOrders.length) {
       setSelectedOrders(new Set());
@@ -408,17 +404,15 @@ const ManageOrdersPage = () => {
 
             {/* Date Filter */}
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <select
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
-                <option value="all">All Dates</option>
-                <option value="today">Today</option>
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-              </select>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="date"
+                  value={selectedMenuDate}
+                  onChange={(e) => setSelectedMenuDate(e.target.value)}
+                  className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
 
             {/* Sort */}
@@ -463,7 +457,7 @@ const ManageOrdersPage = () => {
             <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Orders Found</h3>
             <p className="text-gray-600">
-              {searchTerm || statusFilter !== 'all' || dateFilter !== 'all'
+              {searchTerm || statusFilter !== 'all' 
                 ? 'Try adjusting your search or filters.'
                 : 'No orders have been placed yet.'}
             </p>
@@ -572,36 +566,28 @@ const ManageOrdersPage = () => {
                       
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex space-x-2">
-                          <button
-                            onClick={() => {/* Add view details logic */}}
-                            className="text-orange-600 hover:text-orange-900"
-                            title="View Details"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </button>
-                          {userRole === 'caterer' && ![ORDER_STATUS.DELIVERED, ORDER_STATUS.CANCELLED].includes(order.status) && (
-                            <select
-                              onChange={async (e) => {
-                                try {
-                                  await orderService.updateOrderStatus(order.order_id, { status: e.target.value });
-                                  setOrders(prev => prev.map(o => 
-                                    o.order_id === order.order_id ? { ...o, status: e.target.value } : o
-                                  ));
-                                } catch (err) {
-                                  console.error('Error updating status:', err);
-                                }
-                              }}
-                              value={order.status}
-                              className="text-xs border border-gray-300 rounded px-2 py-1"
-                            >
-                              <option value={ORDER_STATUS.PENDING}>Pending</option>
-                              <option value={ORDER_STATUS.CONFIRMED}>Confirmed</option>
-                              <option value={ORDER_STATUS.PREPARING}>Preparing</option>
-                              <option value={ORDER_STATUS.READY}>Ready</option>
-                              <option value={ORDER_STATUS.DELIVERED}>Delivered</option>
-                              <option value={ORDER_STATUS.CANCELLED}>Cancelled</option>
-                            </select>
-                          )}
+                        
+                        
+                            <div className="flex justify-end space-x-2">
+                              {order.status === ORDER_STATUS.PENDING && (
+                                <button
+                                  onClick={() => handleStatusUpdate(order, ORDER_STATUS.CANCELLED)}
+                                  className="px-3 py-1 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50"
+                                >
+                                  Cancel
+                                </button>
+                              )}
+                              {getNextStatus(order.status) && (
+                              <button
+                                onClick={() => handleStatusUpdate(order, getNextStatus(order.status))}
+                                className="px-3 py-1 text-sm bg-orange-600 text-white rounded-md hover:bg-orange-700"
+                              >
+                                Mark as {getNextStatus(order.status).charAt(0).toUpperCase() + getNextStatus(order.status).slice(1)}
+                              </button>
+                            )}
+                             </div>
+                          
+          
                         </div>
                       </td>
                     </tr>

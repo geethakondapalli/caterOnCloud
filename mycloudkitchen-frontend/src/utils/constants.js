@@ -23,4 +23,13 @@ export const PAYMENT_STATUS = {
   CANCELLED: 'cancelled'
 };
 
+export const getNextStatus = (currentStatus) => {
+  const statusFlow = {
+    [ORDER_STATUS.PENDING]: ORDER_STATUS.CONFIRMED,
+    [ORDER_STATUS.CONFIRMED]: ORDER_STATUS.PREPARING,
+    [ORDER_STATUS.PREPARING]: ORDER_STATUS.READY,
+    [ORDER_STATUS.READY]: ORDER_STATUS.DELIVERED
+  };
+  return statusFlow[currentStatus];
+};
 export const STRIPE_PUBLISHABLE_KEY = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;

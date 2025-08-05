@@ -155,6 +155,7 @@ async def get_payments_by_menu_date(
                 o.customer_name,
                 o.customer_phone,
                 o.customer_address,
+                o.menu_date,
                 o.total 
             FROM payments p
             RIGHT JOIN orders o ON p.payment_id = o.payment_id
@@ -179,6 +180,7 @@ async def get_payments_by_menu_date(
                         "customer_name": row.customer_name,
                         "customer_phone": row.customer_phone,
                         "customer_address": row.customer_address,
+                        "menu_date":row.menu_date,
                         "total": float(row.total)
 
                     }
@@ -195,6 +197,7 @@ async def get_payments_by_menu_date(
                         "customer_name": row.customer_name,
                         "customer_phone": row.customer_phone,
                         "customer_address": row.customer_address,
+                        "menu_date": row.menu_date,
                         "total": float(row.total) if row.total is not None else 0.0
                     }
 
