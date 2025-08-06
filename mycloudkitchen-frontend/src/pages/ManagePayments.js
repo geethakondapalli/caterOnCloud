@@ -20,7 +20,15 @@ const ManagePayments = () => {
   const fetchPayments = async () => {
     setLoading(true);
     try {
-      const data = await paymentService.getPaymentsByMenuDate(selectedMenuDate);
+      const params = {
+        // Add any additional parameters if needed
+        // user_id: user?.id, // Uncomment if you need to filter by user
+        // include_details: true,
+        menu_date: selectedMenuDate, // Pass the selected menu date
+        skip:0,
+        limit: 100 
+      };
+      const data = await paymentService.getPaymentsByMenuDate(params);
       //const data = await paymentService.getPayments();
       setPayments(data);
       setRefreshKey(prev => prev + 1);

@@ -9,6 +9,7 @@ from app.models.payment import Payment
 from app.models.order import Order
 from app.schemas.payment import PaymentCreate, PaymentUpdate, PaymentResponse,PaymentResponseWithOrder
 from app.core.dependencies import get_current_user
+from app.models.user import User
 import stripe
 
 from app.core.config import settings
@@ -127,11 +128,12 @@ def get_payments(
         payments = db.query(Payment).offset(skip).limit(limit).all()
         return payments
 
-@router.get("/{menu_date}/",response_model=List[PaymentResponseWithOrder])
+@router.get("/bymenudate/",response_model=List[PaymentResponseWithOrder])
 async def get_payments_by_menu_date(
-    menu_date:str ,
     skip: int = 0,
     limit: int = 100,
+    menu_date: str = Query(..., description="Menu date in YYYY-MM-DD format"),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """

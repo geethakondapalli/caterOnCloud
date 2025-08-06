@@ -21,8 +21,13 @@ export const paymentService = {
     return response.data;
   },
 
-  getPaymentsByMenuDate: async (menu_date) => {
-    const response = await api.get(`/payments/${menu_date}`);
+  getPaymentsByMenuDate: async (params = {}) => {
+    const queryParams = {
+      skip: 0,
+      limit: 100,
+      ...params 
+    }// Spread the passed parameters) => {
+    const response = await api.get(`/payments/bymenudate/`,{ params: queryParams });
     return response.data;
   },
 };
