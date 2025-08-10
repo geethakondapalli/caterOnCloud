@@ -210,35 +210,82 @@ const FlyerGenerator = ({ isOpen, onClose, menu, template={customerTemplate} }) 
                     {category}
                   </h3>
                   <div className="grid gap-3">
-                    {items.map((item) => (
-                      <div key={item.catalog_item_id} className="flex justify-between items-start p-3 rounded-lg bg-white shadow-sm">
-                        <div className="flex-1 pr-4">
-                          <h4 className="font-semibold text-lg text-gray-900">{item.item_name}</h4>
-                          {item.description && (
-                            <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-                          )}
-                          {item.is_combo && (
-                            <div className="mt-2">
-                              <span 
-                                className="text-xs px-2 py-1 rounded-full"
-                                style={{ 
-                                  backgroundColor: template.colors.accent + '20',
-                                  color: template.colors.accent
-                                }}
-                              >
-                                Combo Deal
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <div 
-                          className="text-xl font-bold"
-                          style={{ color: template.colors.primary }}
-                        >
-                          £{item.price}
-                        </div>
-                      </div>
+                  <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+  <table className="w-full">
+    <tbody>
+      {items.map((item) => (
+        <React.Fragment key={item.catalog_item_id}>
+          {/* Main Item Row */}
+          <tr className="border-b border-gray-100 hover:bg-gray-50">
+            <td className="p-4 align-top">
+              <div className="font-semibold text-lg text-gray-900">
+                {item.item_name}
+              </div>
+
+            </td>
+            
+           
+            
+            <td className="p-4 align-top text-right">
+              <div
+                className="text-xl font-bold"
+                style={{ color: template.colors.primary }}
+              >
+                £{item.price}
+                {item.is_combo && (
+                  <div className="text-xs opacity-75 font-normal mt-1">
+                    Includes
+                  </div>
+                )}
+              </div>
+
+            </td>
+          </tr>
+          <tr className="border-b border-gray-100 hover:bg-gray-50">
+          <td className="p-4 align-top">
+              {item.description && (
+                <p className="text-sm text-gray-600">{item.description}</p>
+              )}
+            </td>
+          
+          {/* Combo Items Sub-rows */}
+          {item.is_combo && item.combo_items && (
+            <tr>
+              <td colSpan="3" className="px-4 pb-4">
+                <div className="bg-gray-50 rounded-lg p-3 ml-4">
+                  <div className="text-sm font-medium mb-2 text-gray-700">
+                    Combo includes:
+                  </div>
+                  <ul className="space-y-2 list-none">
+                    {item.combo_items.map((comboItem, index) => (
+                      <li
+                        key={index}
+                        className="flex justify-between items-center text-sm"
+                        style={{ color: template.colors.text }}
+                      >
+                        <span className="flex items-center">
+                          <span className="w-1 h-1 bg-current rounded-full mr-2 opacity-60"></span>
+                          {comboItem.item_name}
+                        </span>
+                        {comboItem.quantity && (
+                          <span className="text-xs opacity-75 ml-2">
+                            {comboItem.quantity} portions
+                          </span>
+                        )}
+                      </li>
                     ))}
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          )}
+          </tr>
+
+        </React.Fragment>
+      ))}
+    </tbody>
+  </table>
+</div>
                   </div>
                 </div>
               ))}
