@@ -1,12 +1,14 @@
-from sqlalchemy import Column, Integer, String, DateTime, DECIMAL, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, DECIMAL, Text, ForeignKey,Sequence
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
 
+payment_id_seq = Sequence('payment_id_seq', start=1001, increment=1)
+
 class Payment(Base):
     __tablename__ = "payments"
 
-    payment_id = Column(Integer, primary_key=True)
+    payment_id = Column(Integer, payment_id_seq, primary_key=True , server_default=payment_id_seq.next_value())
     payment_method = Column(String(50), nullable=False)
     payment_status = Column(String(20), nullable=False, default='pending')
     amount = Column(DECIMAL(10,2), nullable=False)

@@ -6,6 +6,9 @@ from datetime import datetime
 
 # Create sequence for caterer_id
 caterer_id_seq = Sequence('caterer_id_seq', start=1001, increment=1)
+customer_reviews_seq = Sequence('customer_reviews_seq', start=1001, increment=1)
+catering_inquiries_seq = Sequence('catering_inquiries_seq', start=1001, increment=1)
+
 
 class User(Base):
     __tablename__ = "users"
@@ -26,7 +29,7 @@ class User(Base):
 class CustomerReview(Base):
     __tablename__ = "customer_reviews"
     
-    review_id = Column(Integer, primary_key=True, index=True)
+    review_id = Column(Integer,customer_reviews_seq, primary_key=True, index=True,server_default=customer_reviews_seq.next_value())
     name = Column(String(100), nullable=False)
     email = Column(String(255), nullable=False)
     rating = Column(Integer, nullable=False)  # 1-5 stars
@@ -40,7 +43,7 @@ class CustomerReview(Base):
 class CateringInquiry(Base):
     __tablename__ = "catering_inquiries"
     
-    inquiry_id = Column(Integer, primary_key=True, index=True)
+    inquiry_id = Column(Integer,catering_inquiries_seq, primary_key=True, index=True, server_default=catering_inquiries_seq.next_value())
     name = Column(String(100), nullable=False)
     email = Column(String(255), nullable=False)
     phone = Column(String(20), nullable=False)

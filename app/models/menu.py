@@ -1,8 +1,12 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, JSON, Boolean, Date, ForeignKey, DECIMAL
+from sqlalchemy import Column, Integer, String, DateTime, Text, JSON, Boolean, Date, ForeignKey, DECIMAL,Sequence
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
 from sqlalchemy.dialects.postgresql import JSONB
+
+order_id_seq = Sequence('order_id_seq', start=1001, increment=1)
+menu_item_id_seq = Sequence('menu_item_id_seq', start=1001, increment=1)
+combo_id_seq= Sequence('menu_item_id_seq', start=2001, increment=1)
 
 class ScheduledMenu(Base):
     __tablename__ = "scheduled_menu"

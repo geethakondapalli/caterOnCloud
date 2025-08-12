@@ -1,11 +1,13 @@
-from sqlalchemy import Column, Integer, String, DateTime, Date, JSON, DECIMAL, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Date, JSON, DECIMAL, ForeignKey, Sequence
 from sqlalchemy.orm import relationship
 from app.database import Base
+
+order_id_seq = Sequence('order_id_seq', start=1001, increment=1)
 
 class Order(Base):
     __tablename__ = "orders"
 
-    order_id = Column(Integer, primary_key=True)
+    order_id = Column(Integer,order_id_seq, primary_key=True, server_default=order_id_seq.next_value())
     menu_id = Column(String, ForeignKey("scheduled_menu.menu_id"), nullable=False)
     customer_name = Column(String, nullable=False)
     customer_phone = Column(String)

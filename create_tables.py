@@ -51,8 +51,8 @@ def create_sequences_and_tables():
         """))
 
         connection.execute(text("""
-            CREATE SEQUENCE customer_reviews_seq
-                START WITH 1
+            CREATE SEQUENCE IF NOT EXISTS customer_reviews_seq
+                START WITH 1001
                 INCREMENT BY 1
                 NO MINVALUE
                 NO MAXVALUE
@@ -60,8 +60,8 @@ def create_sequences_and_tables():
         """))
 
         connection.execute(text("""
-            CREATE SEQUENCE catering_inquiries_seq
-            START WITH 1
+            CREATE SEQUENCE IF NOT EXISTS catering_inquiries_seq
+            START WITH 1001
             INCREMENT BY 1
             NO MINVALUE
             NO MAXVALUE
@@ -221,32 +221,6 @@ def create_sequences_and_tables():
         )
         """))  
 
-        connection.execute(text("""
-        CREATE TABLE IF NOT EXISTS catering_inquiries (
-            inquiry_id INTEGER NOT NULL DEFAULT nextval('catering_inquiries_seq'),
-            name VARCHAR(100) NOT NULL,
-            email VARCHAR(255) NOT NULL,
-            phone VARCHAR(20) NOT NULL,
-            event_date TIMESTAMP WITH TIME ZONE NOT NULL,
-            event_type VARCHAR(50) NOT NULL,
-            guest_count INTEGER NOT NULL CHECK (guest_count > 0),
-            message TEXT NULL,
-            status VARCHAR(20) NOT NULL DEFAULT 'pending',
-            caterer_id INTEGER NULL, -- Foreign key to caterers table (if exists)
-            created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            
-            -- Primary Key
-            CONSTRAINT pk_catering_inquiries PRIMARY KEY (inquiry_id),
-            
-            -- Constraints
-            CONSTRAINT chk_inquiry_guest_count CHECK (guest_count > 0),
-            CONSTRAINT chk_inquiry_event_type CHECK (event_type IN ('wedding', 'corporate', 'birthday', 'festival', 'other')),
-            CONSTRAINT chk_inquiry_status CHECK (status IN ('pending', 'contacted', 'quoted', 'confirmed', 'cancelled')),
-            CONSTRAINT chk_inquiry_name_length CHECK (LENGTH(TRIM(name)) >= 2),
-            CONSTRAINT chk_inquiry_future_date CHECK (event_date > CURRENT_TIMESTAMP)
-        )
-        """))  
 
         connection.execute(text("""
             CREATE OR REPLACE FUNCTION update_updated_at_column()
