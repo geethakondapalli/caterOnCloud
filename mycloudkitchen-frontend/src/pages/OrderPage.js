@@ -420,7 +420,7 @@ const OrderForm = () => {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Menu Items</h2>
             <div className="space-y-4">
               {menuData?.items?.map((item) => (
-                <div key={`${item.catalog_item_id}-${item.is_combo}`} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                <div key={`${item.catalog_item_id}-${item.item_name}`} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                   {/* Item Header - Always Visible */}
                   <div className="p-4 bg-white">
                     <div className="flex justify-between items-center">
