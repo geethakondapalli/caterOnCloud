@@ -1,5 +1,5 @@
 from pydantic import BaseModel,validator,Field
-from typing import Optional, List, Dict,Any
+from typing import Annotated, Optional, List, Dict,Any
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -102,6 +102,8 @@ class ComboItem(BaseModel):
     menu_item_id: int
     quantity: int = Field(gt=0, description="Quantity must be greater than 0")
 
+PriceDecimal = Annotated[Decimal, Field(gt=0, max_digits=10, decimal_places=2)]
+
 class ComboItemDetail(BaseModel):
     menu_item_id: int
     item_name: str
@@ -112,7 +114,7 @@ class ComboCreate(BaseModel):
     combo_name: str = Field(..., min_length=1, max_length=100)
     combo_items: List[ComboItem] = Field(..., min_items=1)
     combo_description: Optional[str] = None
-    combo_default_price: Decimal = Field(..., gt=0, decimal_places=2)
+    combo_default_price: Optional[PriceDecimal] = None
     combo_category: Optional[str] = Field(None, max_length=50)
     
     @validator('combo_items')
@@ -131,7 +133,7 @@ class ComboUpdate(BaseModel):
     combo_name: Optional[str] = Field(None, min_length=1, max_length=100)
     combo_items: Optional[List[ComboItem]] = None
     combo_description: Optional[str] = None
-    combo_default_price: Optional[Decimal] = Field(None, gt=0, decimal_places=2)
+    combo_default_price: Optional[PriceDecimal] = None
     combo_category: Optional[str] = Field(None, max_length=50)
     
     @validator('combo_items')
