@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import { menuService } from '../services/menu';
 import { useAuth } from '../context/AuthContext';
 import FlyerGenerator from '../components/menu/FlyerGenerator';
@@ -74,9 +74,23 @@ const ScheduledMenuPage = () => {
   };
 
   const addItemFromCatalog = (catalogItem) => {
+    // Check if item already exists in the menu
+
+    const catalogItemId = catalogItem.is_combo 
+    ? catalogItem.combo_id 
+    : catalogItem.menu_item_id;
+    
+    const isDuplicate = itemFields.some(item => 
+      item.catalog_item_id === catalogItemId
+    );
+  
+    if (isDuplicate) {
+      console.warn(`Item with catalog_item_id ${catalogItemId} already exists in menu`);
+      toast.error(`Item "${catalogItem.is_combo ? catalogItem.combo_name : catalogItem.item_name}" already exists in menu. Add different item`);
+      return; // Exit early if duplicate found
+    }
     if (catalogItem.is_combo) {
-      // Handle combo items - adjust property names as needed
-      appendItem({
+    appendItem({
         catalog_item_id: catalogItem.combo_id ,
         item_name: catalogItem.combo_name ,
         description: catalogItem.combo_description ,

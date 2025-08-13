@@ -1,14 +1,20 @@
-import React from 'react';
-import { Calendar, MapPin, Star, Clock } from 'lucide-react';
+import { React , useState, useEffect} from 'react';
+import { Calendar,AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { menuService } from '../../services/menu';
+import { orderService } from '../../services/orders';
+import MenuForm from './MenuForm'; // Assuming you have a MenuForm component for editing menus
+import { data } from 'react-router-dom';
 
 const MenuCard = ({ menu }) => {
-  const { isCaterer } = useAuth();
-
-
+  const { isCaterer } = useAuth()
+  const [hasOrders, setHasOrders] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const calculatePrice = () => {
     let total = 0;
     if (menu.items && typeof menu.items === 'object') {
@@ -25,6 +31,49 @@ const MenuCard = ({ menu }) => {
     return total;
   };
 
+  useEffect(() => {
+    checkMenuHasOrders(menu.menu_date);
+  }, [menu.menu_date]);
+
+  const checkMenuHasOrders = async (menu_date) => {
+  const response = await orderService.getOrdersbyMenuDate({ menu_date: menu_date});
+    if (response.length > 0) {
+      setHasOrders(true);
+      setIsEditable(false);
+      //toast.error('Cannot edit menu with existing orders');
+      return;
+    }
+    else {
+      setHasOrders(false);
+      setIsEditable(true);
+      //toast.success('Menu is editable now');
+      
+    }
+
+  };
+
+  const handleEditMenuClick = async () => {
+    
+    try {
+
+
+      // Set form data and show form
+      setFormData(menu);
+      setIsEditing(true); // This will trigger the form to render
+      
+    } catch (error) {
+      console.error('Error opening edit form:', error);
+      toast.error('Failed to open edit form');
+    }
+
+    setIsModalOpen(true); // Open the modal
+  };
+
+
+  const handleFormCancel = (data) => {
+    console.log('Form submitted with data:', data);
+  };
+  
   const renderMenuItems = () => {
     if (!menu.items || typeof menu.items !== 'object') return null;
      // Group items by category
@@ -168,8 +217,51 @@ const MenuCard = ({ menu }) => {
                 : 'text-gray-600 hover:text-gray-700'
             }`}
           >
-            {menu.active ? 'Deactivate' : 'Activate'}
+          {menu.active ? 'Deactivate' : 'Activate'}
           </button>
+          {menu.active && new Date(menu.menu_date) < new Date().setHours(0,0,0,0) && (
+          <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-300">
+          <AlertTriangle className="h-3 w-3 mr-1" />
+             Menu date has passed 
+             consider deactivating
+          </div>
+          )}
+{/* 
+          <button
+            onClick={handleEditMenuClick}
+            className={`text-sm px-4 py-2 rounded-md transition-colors ${ 
+              hasOrders ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-orange-600 text-white hover:bg-orange-700'
+            }`}
+           >
+            {hasOrders || new Date(menu.menu_date) < new Date().setHours(0,0,0,0) ? 'Menu Not Editable' : 'Edit Menu '}
+          </button> */}
+
+       {/*  {/* Menu Form - Only renders when isEditing is true */}
+        {/* {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+             <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+              {menu && (
+                <MenuForm 
+                  menu= {menu}
+                  isEditable={true}
+                  onSubmit={async (data) => {
+                    try {
+                      await menuService.updateScheduledMenu(menu.menu_id, data);
+                      toast.success('Menu updated successfully');
+                      setFormData(null); // Clear form after submission
+                      setIsEditable(false); // Close modal
+                    } catch (error) {
+                      console.error('Error updating menu:', error);
+                      toast.error('Failed to update menu');
+                    }
+                  }}
+                  onCancel={handleFormCancel}
+                />
+              )}
+            </div>
+        </div>
+      )}  */}
+    
         </div>
       </div>
     </div>

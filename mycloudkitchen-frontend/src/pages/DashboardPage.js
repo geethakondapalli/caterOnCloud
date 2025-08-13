@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { menuService } from '../services/menu';
 import { orderService } from '../services/orders';
-import MenuForm from '../components/menu/MenuForm';
+
 import OrderCard from '../components/orders/OrderCard';
 import { Plus, Calendar, Package, TrendingUp } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -14,8 +14,6 @@ const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('menus');
   const [menus, setMenus] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [showMenuForm, setShowMenuForm] = useState(false);
-  const [editingMenu, setEditingMenu] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -36,27 +34,6 @@ const DashboardPage = () => {
       toast.error('Failed to load dashboard data');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleCreateMenu = async (menuData) => {
-    try {
-      await menuService.createMenuItem(menuData);
-      setShowMenuForm(false);
-      loadDashboardData();
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const handleUpdateMenu = async (menuData) => {
-    try {
-      await menuService.updateMenuItem(editingMenu.menu_id, menuData);
-      setEditingMenu(null);
-      setShowMenuForm(false);
-      loadDashboardData();
-    } catch (error) {
-      throw error;
     }
   };
 
@@ -438,15 +415,6 @@ const DashboardPage = () => {
       </div>
 
       <div className="flex space-x-2">
-        <button
-          onClick={() => {
-            setEditingMenu(menu);
-            setShowMenuForm(true);
-          }}
-          className="text-sm text-orange-600 hover:text-orange-700"
-        >
-          Edit
-        </button>
         <button
           onClick={async () => {
             try {
