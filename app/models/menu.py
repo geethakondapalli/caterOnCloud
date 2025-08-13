@@ -47,7 +47,7 @@ class ScheduledMenu(Base):
 
 class MenuCatalog(Base):
     __tablename__ = "menu_catalog"
-    menu_item_id = Column(Integer, primary_key=True)
+    menu_item_id = Column(Integer, menu_item_id_seq, primary_key=True, server_default=menu_item_id_seq.next_value())
     item_name = Column(String(100), nullable=False)
     description = Column(Text)
     default_price = Column(DECIMAL(8,2), nullable=False)
@@ -62,7 +62,7 @@ class MenuCatalog(Base):
 class MenuCombo(Base):
     __tablename__ = "menu_combo_catalog"
     
-    combo_id = Column(Integer, primary_key=True, index=True)
+    combo_id = Column(Integer, combo_id_seq, primary_key=True, server_default=combo_id_seq.next_value())
     combo_name = Column(String(100), nullable=False)
     combo_items = Column(JSONB, nullable=False)
     combo_description = Column(Text, nullable=True)
