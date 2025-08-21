@@ -1,3 +1,4 @@
+import os
 from pydantic_settings import BaseSettings
 from typing import Optional
 
@@ -15,11 +16,20 @@ class Settings(BaseSettings):
     email_password: str
     smtp_server: str = "smtp.gmail.com"
     smtp_port: int = 587
-    base_url: str 
-    fe_url: str
+    base_url: Optional[str] = None
+    fe_url: Optional[str] = None
     twilio_account_sid: str
     twilio_auth_token: str
     twilio_phone_number: str
+    
+    @property
+    def base_url(self) -> str:
+        # Railway provides RAILWAY_STATIC_URL automatically
+        if os.getenv("RAILWAY_STATIC_URL"):
+            return os.getenv("RAILWAY_STATIC_URL")
+        return f"http://localhost:{os.getenv('PORT', 8050)}"
+    
+    fe_url: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
     
     class Config:
         env_file = ".env"
