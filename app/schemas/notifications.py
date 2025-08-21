@@ -42,7 +42,7 @@ class EmailService:
             msg['Subject'] = email_data.subject
             logger = logging.getLogger(__name__)
             # Add HTML body
-            msg.attach(MIMEText(email_data.html, 'html'))
+            msg.attach(MIMEText(email_data.html, 'html','utf-8'))
 
             # Add attachments
             for attachment in email_data.attachments:

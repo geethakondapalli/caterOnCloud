@@ -58,7 +58,7 @@ function App() {
                 <Route path="/intro" element={<IntroPage />} />
                 <Route path="/" element={<IntroPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/register-coc" element={<RegisterPage />} />
                 <Route path="/browsemenu" element={<MenuPage />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/order/:menuId" element={<MenuOrderForm/>}  />

@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, User, LogOut, Menu, X } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 const ResponsiveHeader = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const { user } = useAuth();
+  const [contextuser, setLocalUser] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      setLocalUser(user);
+    }
+  }, [user]);
 
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
@@ -77,7 +86,6 @@ const ResponsiveHeader = () => {
             <div className="relative group">
               <button className="flex items-center space-x-2 text-gray-700 hover:text-orange-600">
                 <User className="h-6 w-6" />
-                <span>Mexican</span>
               </button>
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
                 <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="/profile">
@@ -103,7 +111,7 @@ const ResponsiveHeader = () => {
               </button>
               {openDropdown === 'user' && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200">
-                  <div className="px-4 py-2 text-sm font-medium text-gray-900 border-b">user.name</div>
+                  <div className="px-4 py-2 text-sm font-medium text-gray-900 border-b"> {user.name}</div>
                   <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="/profile">
                     Profile
                   </a>

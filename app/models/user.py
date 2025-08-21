@@ -24,6 +24,10 @@ class User(Base):
     address = Column(String)
     specialties = Column(JSON)
     bio = Column(Text)
+    email_confirmation_token = Column(String, nullable=True)
+    email_confirmation_expires = Column(DateTime, nullable=True)
+    email_confirmed = Column(Boolean, default=False)
+    email_confirmed_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class CustomerReview(Base):

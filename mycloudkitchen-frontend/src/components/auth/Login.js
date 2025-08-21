@@ -13,11 +13,15 @@ const Login = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      await login(data.email, data.password);
+     await login(data.email, data.password);
       toast.success('Login successful!');
       navigate('/dashboard');
+
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Login failed');
+      console.error('Login failed:', error);
+      toast.error('Login failed. Please check your credentials and try again.');
+      // Optionally, you can reset the form or handle specific error messages
+      // reset();
     } finally {
       setLoading(false);
     }
@@ -81,10 +85,7 @@ const Login = () => {
 
           <div className="text-center">
             <span className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/register" className="font-medium text-orange-600 hover:text-orange-500">
-                Sign up
-              </Link>
+              Don't have an account?Contact agsmartsolutionz@gmail.com
             </span>
           </div>
         </form>

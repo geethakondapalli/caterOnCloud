@@ -485,28 +485,6 @@ const MenuPage = () => {
           </div>
         )}
 
-
-        {/* Debug Info (remove in production) */}
-         {process.env.NODE_ENV === 'development' && (
-          <div className="mt-12 bg-gray-100 rounded-lg p-6">
-            <details>
-              <summary className="cursor-pointer font-medium text-gray-700 mb-4">
-                Debug Info (Dev Only)
-              </summary>
-              <pre className="bg-white p-4 rounded border text-xs overflow-x-auto">
-                {JSON.stringify({ 
-                  totalMenus: menus.length, 
-                  filteredMenus: filteredMenus.length,
-                  searchTerm,
-                  selectedDate,
-                  sortBy,
-                  loading,
-                  error 
-                }, null, 2)}
-              </pre>
-            </details>
-          </div>
-        )}
       </div>
     </div>
   );

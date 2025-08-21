@@ -1,3 +1,5 @@
 mycloudkitchen-frontend/node_modules/
 .cache/
 *.log
+*.pyc
+__pycache__/
