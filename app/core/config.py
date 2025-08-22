@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     email_password: str
     smtp_server: str = "smtp.gmail.com"
     smtp_port: int = 587
-    base_url: str= os.getenv("BASE_URL", "http://localhost:8000")
-    fe_url: str = os.getenv("FE_URL", "http://localhost:3000")
+    base_url: str
+    fe_url: str
     twilio_account_sid: str
     twilio_auth_token: str
     twilio_phone_number: str
