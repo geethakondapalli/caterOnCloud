@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 # Create sequence for caterer_id
-caterer_id_seq = Sequence('caterer_id_seq', start=1001, increment=1)
+
 customer_reviews_seq = Sequence('customer_reviews_seq', start=1001, increment=1)
 catering_inquiries_seq = Sequence('catering_inquiries_seq', start=1001, increment=1)
 
@@ -13,8 +13,8 @@ catering_inquiries_seq = Sequence('catering_inquiries_seq', start=1001, incremen
 class User(Base):
     __tablename__ = "users"
 
-    email = Column(String, unique=True, nullable=False)
-    caterer_id = Column(Integer, caterer_id_seq, primary_key=True, server_default=caterer_id_seq.next_value())
+    email = Column(String, primary_key=True, nullable=False)
+    caterer_id = Column(Integer, server_default='1001')
     password = Column(String, nullable=False)
     password_salt = Column(String, nullable=False)
     name = Column(String, nullable=False)

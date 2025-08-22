@@ -24,7 +24,7 @@ const Register = () => {
         specialties: data.role === 'caterer' ? { cuisine: [data.cuisine] } : null,
         bio: data.bio || null
       });
-      toast.success('Registration successful! Please login.');
+      toast.success('Registration successful! Please check your mail and activate the account.');
       navigate('/login');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Registration failed');

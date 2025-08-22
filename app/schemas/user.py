@@ -88,7 +88,7 @@ def send_confirmation_email(email: str, token: str, name: str):
         msg['Subject'] = "Confirm Your Email Address"
         
         # Email body
-        confirmation_url = f"{settings.base_url}/auth/confirm-email?token={token}"
+        confirmation_url = f"{settings.base_url}auth/confirm-email?token={token}"
         
         html_body = f"""
         <html>
@@ -151,6 +151,7 @@ def register_user(
     # Create new user with pending status
     db_user = User(
         email=user.email.lower(),
+        caterer_id=1001,  # Default caterer_id, you can change this logic
         password=hashed_password,
         password_salt=salt,
         name=user.name,

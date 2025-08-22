@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, User, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { authService } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 const ResponsiveHeader = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const { user } = useAuth();
   const [contextuser, setLocalUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -17,6 +20,14 @@ const ResponsiveHeader = () => {
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
   };
+  const handlelogout = (user) => {
+    if (user) {
+      authService.logout();
+      setLocalUser(null);
+      navigate('/login');
+    }
+  }
+
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -91,7 +102,8 @@ const ResponsiveHeader = () => {
                 <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="/profile">
                   Profile
                 </a>
-                <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={()=> handlelogout('user')}>
                   <LogOut className="inline h-4 w-4 mr-2" />
                   Logout
                 </button>
@@ -115,7 +127,8 @@ const ResponsiveHeader = () => {
                   <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="/profile">
                     Profile
                   </a>
-                  <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={()=> handlelogout('user')}>
                     <LogOut className="inline h-4 w-4 mr-2" />
                     Logout
                   </button>
