@@ -225,7 +225,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
     
     try:
         db.commit()
-        login_url = f"{settings.fe_url}/login"
+        login_url = f"{settings.fe_url}login"
         success_html = f"""
             <!DOCTYPE html>
             <html>
