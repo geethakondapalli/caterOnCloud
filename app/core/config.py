@@ -1,4 +1,5 @@
 import os
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from typing import Optional
 
@@ -18,10 +19,17 @@ class Settings(BaseSettings):
     smtp_port: int = 587
     base_url: str
     fe_url: str
-    allowed_origins: Optional[list[str]] = ["http://localhost:3000", "http://localhost:8000","https://mycloudkitchendemo.agsmartsolutionz.uk"]
+    allowed_origins: Optional[list[str]] = ["http://localhost:3000", "http://localhost:8000"]
     twilio_account_sid: str
     twilio_auth_token: str
     twilio_phone_number: str
+
+    @field_validator('allowed_origins', mode='before')
+    @classmethod
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(',')]
+        return v
     
     class Config:
         env_file = ".env"
