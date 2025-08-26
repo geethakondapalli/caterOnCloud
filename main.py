@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.routers import auth, notifications, users, menu, orders, payments,inquiry,review
 from dotenv import load_dotenv
+import os
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
@@ -12,16 +13,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS", 
+    "http://localhost:3000"
+).split(",")
+
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # React development server
-        "http://127.0.0.1:3000",
-        "https://distinguished-art.railway.internal",
-        "https://frontend-production-6ab1.up.railway.app",
-        "https://cateroncloud-production.up.railway.app" # Your production domain
-    ],  # Configure this properly for production
+    allow_origins=ALLOWED_ORIGINS,  # Configure this properly for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
