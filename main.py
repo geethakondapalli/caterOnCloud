@@ -4,6 +4,7 @@ from app.database import engine, Base
 from app.routers import auth, notifications, users, menu, orders, payments,inquiry,review
 from dotenv import load_dotenv
 import os
+
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
@@ -14,8 +15,7 @@ app = FastAPI(
 )
 
 ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS", 
-    "http://localhost:3000"
+    "ALLOWED_ORIGINS"
 ).split(",")
 
 # CORS middleware
