@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, Check, Trash2, AlertCircle, Clock, User, Star } from 'lucide-react';
+import {  Check, Trash2, AlertCircle, Clock, User, Star } from 'lucide-react';
 import { reviewService }  from '../services/review';
+import toast from 'react-hot-toast';
+
 
 const AdminReviewManagement = () => {
   const [reviews, setReviews] = useState([]);
@@ -13,10 +15,10 @@ const AdminReviewManagement = () => {
   // Sample data - replace with actual API calls
   useEffect(() => {
     fetchReviews();
-  }, []);
+  }, [reviews]);
 
   const fetchReviews = async () => {
-    setLoading(true);
+
     try {
       // Replace with actual API call
       const data = await reviewService.getAllReviews();
@@ -29,18 +31,22 @@ const AdminReviewManagement = () => {
     }
   };
 
-  const approveReview = async (reviewId) => {
-    setActionLoading(reviewId);
+  const approveReview = async (review) => {
+    setActionLoading(review.review_id);
     try {
+      const reviewId = review.review_id;
       const response = await reviewService.approveReview(reviewId);
       
       if (response.ok) {
+   
         setReviews(reviews.map(review => 
           review.review_id === reviewId 
-            ? { ...review, is_approved: true }
+            ? { ...review, is_approved: true}
             : review
-        ));
+        )); 
+       
       }
+      toast.success('Review approved successfully!');
     } catch (error) {
       console.error('Failed to approve review:', error);
     } finally {
@@ -48,18 +54,21 @@ const AdminReviewManagement = () => {
     }
   };
 
-  const deleteReview = async (reviewId) => {
-    setActionLoading(reviewId);
+  const deleteReview = async (review) => {
+    setActionLoading(review.review_id);
     try {
+      const reviewId = review.review_id;
       const response = await reviewService.deleteReview(reviewId);
       
       if (response.ok) {
+      
         setReviews(reviews.filter(review => review.review_id !== reviewId));
-        setShowDeleteModal(false);
+       
       }
     } catch (error) {
       console.error('Failed to delete review:', error);
     } finally {
+      setShowDeleteModal(false);
       setActionLoading(null);
     }
   };
@@ -211,7 +220,7 @@ const AdminReviewManagement = () => {
                     <div className="flex space-x-2">
                       {!review.is_approved && (
                         <button
-                          onClick={() => approveReview(review.review_id)}
+                          onClick={() => approveReview(review)}
                           disabled={actionLoading === review.review_id}
                           className="bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1"
                         >
@@ -268,7 +277,7 @@ const AdminReviewManagement = () => {
                 Cancel
               </button>
               <button
-                onClick={() => deleteReview(selectedReview.review_id)}
+                onClick={() => deleteReview(selectedReview)}
                 disabled={actionLoading === selectedReview.review_id}
                 className="flex-1 bg-red-600 text-white px-4 py-2 rounded font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
