@@ -44,25 +44,25 @@ const IntroPage = () => {
   const eventPhotos = [
     {
       id: 1,
-      url: "/img1.png",
+      url: `${window.location.origin}/img1.png`,
       title: "Wedding Reception",
       description: "Beautiful wedding catering for 150 guests"
     },
     {
       id: 2,
-      url: "/food_img2.png",
+      url: `${window.location.origin}/food_img2.png`,
       title: "Corporate Event",
       description: "Professional catering for business conference"
     },
     {
       id: 3,
-      url: "/food_img3.png",
+      url: `${window.location.origin}/food_img3.png`,
       title: "Birthday Celebration",
       description: "Special birthday party catering"
     },
     {
       id: 4,
-      url: "/food_img4.png",
+      url: `${window.location.origin}/food_img4.png`,
       title: "Festival Catering",
       description: "Community festival food service"
     }
