@@ -14,8 +14,7 @@ const Footer = () => {
               <span className="text-2xl font-bold">MyCloudKitchen</span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md">
-              Connecting food lovers with passionate caterers. Experience restaurant-quality 
-              meals prepared with love and delivered fresh to your door.
+              Experience restaurant-quality meals prepared with love and delivered fresh to your door.
             </p>
       
           </div>
@@ -28,18 +27,16 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center text-gray-400">
                 <Mail className="h-5 w-5 mr-3 text-orange-500" />
-                <span>hello@mycloudkitchen.com</span>
+                <span>agsmartsolutionz@gmail.com</span>
               </li>
               <li className="flex items-center text-gray-400">
                 <Phone className="h-5 w-5 mr-3 text-orange-500" />
-                <span>+44 20 1234 5678</span>
+                <span>+44 7476288152</span>
               </li>
               <li className="flex items-start text-gray-400">
                 <MapPin className="h-5 w-5 mr-3 mt-1 text-orange-500 flex-shrink-0" />
                 <span>
-                  123 Food Street<br />
-                  London, UK<br />
-                  SW1A 1AA
+                  Colchester, UK<br />
                 </span>
               </li>
             </ul>
@@ -65,7 +62,7 @@ const Footer = () => {
             </div>
             <div className="text-center md:text-right">
               <p className="text-gray-400 text-sm">
-                © {new Date().getFullYear()} MyCloudKitchen. All rights reserved.
+                © {new Date().getFullYear()} MyCloudKitchen. All rights reserved. Powered by AG Smart Solutionz.
               </p>
               <p className="text-gray-500 text-xs mt-1">
                 Made with ❤️ for food lovers everywhere

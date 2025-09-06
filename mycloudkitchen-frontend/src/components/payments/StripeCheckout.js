@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
-  CardElement,
+  PaymentElement,
   useStripe,
   useElements
 } from '@stripe/react-stripe-js';
@@ -43,20 +43,15 @@ const CheckoutForm = ({ order, onSuccess, onError }) => {
 
     setLoading(true);
 
-    const card = elements.getElement(CardElement);
-
     try {
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: card,
-          billing_details: {
-            name: order.customer_name,
-            email: order.customer_email,
-            phone: order.customer_phone,
-          },
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: window.location.origin, // Add your success URL
         },
+        redirect: 'if_required', // This prevents redirect for successful payments
       });
-
+  
       if (error) {
         toast.error(error.message);
         onError?.(error);
@@ -72,32 +67,24 @@ const CheckoutForm = ({ order, onSuccess, onError }) => {
     }
   };
 
-  const cardElementOptions = {
-    style: {
-      base: {
-        fontSize: '16px',
-        color: '#424770',
-        '::placeholder': {
-          color: '#aab7c4',
+  const paymentElementOptions = {
+    defaultValues: {
+      billingDetails: {
+        name: order.customer_name,
+        email: order.customer_email,
+        phone: order.customer_phone,
+        address: {
+          country: 'GB',
         },
       },
-      invalid: {
-        color: '#9e2146',
-      },
     },
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Card Details
-        </label>
-        <div className="p-3 border border-gray-300 rounded-md">
-          <CardElement options={cardElementOptions} />
-        </div>
+        <PaymentElement options={paymentElementOptions} />
       </div>
-
       <button
         type="submit"
         disabled={!stripe || loading}
