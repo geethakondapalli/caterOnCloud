@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Inquiry Management App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        /* Page Title */
+        .page-title {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8a50 100%);
+            color: white;
+            padding: 20px 16px;
+        }
+        
+        .title-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .title-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 16px;
+            background: #f8f9fa;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .stat-icon.total { background: #e9ecef; color: #6c757d; }
+        .stat-icon.pending { background: #fff3cd; color: #856404; }
+        .stat-icon.contacted { background: #cce7ff; color: #0066cc; }
+        .stat-icon.confirmed { background: #d4edda; color: #155724; }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Tab Navigation */
+        .tab-navigation {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab-container {
+            display: flex;
+            gap: 4px;
+            min-width: max-content;
+        }
+        
+        .tab-item {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6c757d;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .tab-item.active {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+        
+        .tab-count {
+            margin-left: 4px;
+        }
+        
+        /* Filter Section */
+        .filter-section {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filter-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .sort-select {
+            padding: 6px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 12px;
+            background: #f8f9fa;
+        }
+        
+        /* Inquiries Section */
+        .inquiries-section {
+            padding: 16px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .inquiries-count {
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .inquiry-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .inquiry-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff6b35;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .customer-details {
+            flex: 1;
+        }
+        
+        .customer-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .inquiry-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .inquiry-content {
+            padding: 0 16px 16px 16px;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .contact-icon {
+            width: 16px;
+            height: 16px;
+            background: #6c757d;
+            border-radius: 2px;
+        }
+        
+        .event-details {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .event-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .event-icon {
+            width: 16px;
+            height: 16px;
+            background: #ff6b35;
+            border-radius: 2px;
+        }
+        
+        .timestamps {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+        
+        .inquiry-actions {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 10px;
+            color: #6c757d;
+            padding: 8px 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .nav-item.active {
+            color: #ff6b35;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: 4px;
+            margin: 0 auto 4px;
+            opacity: 0.7;
+        }
+        
+        .nav-item.active .nav-icon {
+            opacity: 1;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #ff6b35;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="back-button">←</div>
+                <div class="logo">Caterer Name</div>
+            </div>
+            <div class="header-actions">
+                <div class="header-icon">🔍</div>
+                <div class="header-icon">⋮</div>
+            </div>
+        </div>
+        
+        <!-- Page Title -->
+        <div class="page-title">
+            <div class="title-text">Inquiry Management</div>
+            <div class="title-subtitle">Manage customer inquiries and catering requests</div>
+        </div>
+        
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon total">📋</div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Total Inquiries</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon pending">⏱</div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon contacted">💬</div>
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Contacted</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon confirmed">✅</div>
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">Confirmed</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <div class="tab-container">
+                <div class="tab-item active">All <span class="tab-count">(1)</span></div>
+                <div class="tab-item">Pending <span class="tab-count">(0)</span></div>
+                <div class="tab-item">Contacted <span class="tab-count">(0)</span></div>
+                <div class="tab-item">Quoted <span class="tab-count">(0)</span></div>
+                <div class="tab-item">Confirmed <span class="tab-count">(1)</span></div>
+                <div class="tab-item">Cancelled <span class="tab-count">(0)</span></div>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-label">Sort by:</div>
+            <select class="sort-select">
+                <option>Newest First</option>
+                <option>Oldest First</option>
+                <option>Event Date</option>
+                <option>Guest Count</option>
+            </select>
+        </div>
+        
+        <!-- Inquiries Section -->
+        <div class="inquiries-section">
+            <div class="section-header">
+                <div class="section-title">Customer Inquiries</div>
+                <div class="inquiries-count">1 inquiry</div>
+            </div>
+            
+            <!-- Inquiry Card -->
+            <div class="inquiry-card">
+                <div class="inquiry-header">
+                    <div class="customer-info">
+                        <div class="customer-avatar">F</div>
+                        <div class="customer-details">
+                            <div class="customer-name">festival</div>
+                        </div>
+                    </div>
+                    <div class="inquiry-status">✓ Confirmed</div>
+                </div>
+                
+                <div class="inquiry-content">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">✉</div>
+                            <span>Alice@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <span>07776615277</span>
+                        </div>
+                    </div>
+                    
+                    <div class="event-details">
+                        <div class="event-info">
+                            <div class="event-icon">🎉</div>
+                            <span>September 7, 2025 • 100 guests</span>
+                        </div>
+                    </div>
+                    
+                    <div class="timestamps">
+                        <span>Created: Aug 27, 2025, 11:08 PM</span>
+                        <span>Updated: Aug 27, 2025, 11:08 PM</span>
+                    </div>
+                </div>
+                
+                <div class="inquiry-actions">
+                    <button class="action-btn btn-secondary">Contact</button>
+                    <button class="action-btn btn-primary">View Details</button>
+                    <button class="action-btn btn-success">Quote</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Action Button -->
+        <button class="fab">📝</button>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Orders</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Menus</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon"></div>
+                <div>Inquiries</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

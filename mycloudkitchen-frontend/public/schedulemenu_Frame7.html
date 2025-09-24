@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Create Scheduled Menu App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .save-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* Page Title */
+        .page-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 16px;
+        }
+        
+        .title-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .title-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* Menu Details Form */
+        .menu-details {
+            background: white;
+            padding: 20px 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6c757d;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8f9fa;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: white;
+        }
+        
+        /* Selected Items Summary */
+        .selected-summary {
+            background: #e8f5e8;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .summary-text {
+            font-size: 13px;
+            color: #155724;
+            font-weight: 500;
+        }
+        
+        .view-selected {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* Search Bar */
+        .search-section {
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-bar {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8f9fa;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 16px;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab-container {
+            display: flex;
+            gap: 8px;
+            min-width: max-content;
+        }
+        
+        .category-tab {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6c757d;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .category-tab.active {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+        
+        /* Content Sections */
+        .content {
+            padding-bottom: 100px;
+        }
+        
+        .item-section {
+            background: white;
+            margin-bottom: 8px;
+        }
+        
+        .section-header {
+            padding: 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .combo-icon { background: #e3f2fd; color: #1976d2; }
+        .regular-icon { background: #fff3e0; color: #f57c00; }
+        
+        .section-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .item-count {
+            font-size: 11px;
+            color: #6c757d;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .view-all {
+            font-size: 11px;
+            color: #ff6b35;
+            font-weight: 500;
+        }
+        
+        /* Item Cards */
+        .item-list {
+            padding: 8px 16px 16px;
+        }
+        
+        .item-card {
+            background: #fdfdfd;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .item-card.selected {
+            background: #e8f5e8;
+            border-color: #28a745;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .item-details {
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+        
+        .combo-items {
+            font-size: 11px;
+            color: #6c757d;
+            line-height: 1.3;
+        }
+        
+        .item-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 4px;
+        }
+        
+        .item-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #ff6b35;
+            color: white;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .add-button {
+            padding: 8px 12px;
+            border: 1px solid #28a745;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            background: white;
+            color: #28a745;
+        }
+        
+        .add-button.added {
+            background: #28a745;
+            color: white;
+        }
+        
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        /* Bottom Action Bar */
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 12px 16px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .btn-create {
+            flex: 2;
+            padding: 14px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .btn-create:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+        
+        /* Quantity Selector */
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 4px;
+        }
+        
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: white;
+            color: #333;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qty-value {
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="back-button">←</div>
+                <div class="logo">Caterer Name</div>
+            </div>
+            <button class="save-button">💾 Save Draft</button>
+        </div>
+        
+        <!-- Page Title -->
+        <div class="page-title">
+            <div class="title-text">Create Scheduled Menu</div>
+            <div class="title-subtitle">Build your menu from catalog items</div>
+        </div>
+        
+        <!-- Menu Details Form -->
+        <div class="menu-details">
+            <div class="section-title">Menu Details</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Menu Name *</label>
+                    <input type="text" class="form-input" placeholder="e.g., Friday Special Menu">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Menu Date *</label>
+                    <input type="date" class="form-input">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Selected Items Summary -->
+        <div class="selected-summary">
+            <div class="summary-text">📋 3 items selected</div>
+            <button class="view-selected">View Selected</button>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-section">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search catalog items...">
+            </div>
+        </div>
+        
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <div class="tab-container">
+                <div class="category-tab active">All Items</div>
+                <div class="category-tab">Combo Deals</div>
+                <div class="category-tab">Main Courses</div>
+                <div class="category-tab">Appetizers</div>
+                <div class="category-tab">Beverages</div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Combo Deals Section -->
+            <div class="item-section">
+                <div class="section-header">
+                    <div class="section-info">
+                        <div class="section-icon combo-icon">🎁</div>
+                        <div>
+                            <div class="section-name">Combo Deals</div>
+                        </div>
+                    </div>
+                    <div class="item-count">2 available</div>
+                </div>
+                
+                <div class="item-list">
+                    <!-- Combo 2 -->
+                    <div class="item-card selected">
+                        <div class="item-info">
+                            <div class="item-name">Combo 2</div>
+                            <div class="item-badge">COMBO</div>
+                            <div class="combo-items">Veg Noodles, Veg Manchurian +1 more</div>
+                            <div class="item-price">£8.50</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="add-button added">✓ Added</button>
+                            <div class="quantity-selector">
+                                <button class="qty-btn">−</button>
+                                <span class="qty-value">1</span>
+                                <button class="qty-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Combo 1 -->
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-name">Combo 1</div>
+                            <div class="item-badge">COMBO</div>
+                            <div class="combo-items">Veg Fried Rice, Veg Manchurian +1 more</div>
+                            <div class="item-price">£8.50</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="add-button">+ Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Regular Menu Items Section -->
+            <div class="item-section">
+                <div class="section-header">
+                    <div class="section-info">
+                        <div class="section-icon regular-icon">🍽️</div>
+                        <div>
+                            <div class="section-name">Regular Menu Items</div>
+                        </div>
+                    </div>
+                    <div class="item-count">5 available</div>
+                </div>
+                
+                <div class="item-list">
+                    <!-- Chicken Noodles -->
+                    <div class="item-card selected">
+                        <div class="item-info">
+                            <div class="item-name">Chicken Noodles</div>
+                            <div class="item-badge">ITEM</div>
+                            <div class="item-details">ID: 1009 • Main Courses</div>
+                            <div class="item-price">£4.00</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="add-button added">✓ Added</button>
+                            <div class="quantity-selector">
+                                <button class="qty-btn">−</button>
+                                <span class="qty-value">1</span>
+                                <button class="qty-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Veg Noodles -->
+                    <div class="item-card selected">
+                        <div class="item-info">
+                            <div class="item-name">Veg Noodles</div>
+                            <div class="item-badge">ITEM</div>
+                            <div class="item-details">ID: 1008 • Main Courses</div>
+                            <div class="item-price">£4.00</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="add-button added">✓ Added</button>
+                            <div class="quantity-selector">
+                                <button class="qty-btn">−</button>
+                                <span class="qty-value">1</span>
+                                <button class="qty-btn">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chilli Paneer -->
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-name">Chilli Paneer</div>
+                            <div class="item-badge">ITEM</div>
+                            <div class="item-details">ID: 1005 • Appetizers</div>
+                            <div class="item-price">£3.00</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="add-button">+ Add</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Veg Manchurian -->
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-name">Veg Manchurian</div>
+                            <div class="item-badge">ITEM</div>
+                            <div class="item-details">ID: 1004 • Appetizers</div>
+                            <div class="item-price">£3.00</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="add-button">+ Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Action Bar -->
+        <div class="bottom-action-bar">
+            <div class="action-buttons">
+                <button class="btn-cancel">Cancel</button>
+                <button class="btn-create">📅 Create Scheduled Menu</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

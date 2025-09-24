@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Payment Management App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .menu-icon {
+            width: 32px;
+            height: 32px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        /* Page Title */
+        .page-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 16px;
+        }
+        
+        .title-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .title-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* Stats Cards */
+        .stats-section {
+            padding: 16px;
+            background: #f8f9fa;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-card.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .stat-icon.amount { background: #e8f5e8; color: #28a745; }
+        .stat-icon.completed { background: #e3f2fd; color: #1976d2; }
+        .stat-icon.orders { background: #fce4ec; color: #c2185b; }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .filter-item {
+            flex: 1;
+        }
+        
+        .filter-label {
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .filter-input, .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #f8f9fa;
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #f8f9fa;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 16px;
+        }
+        
+        .refresh-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Payments List */
+        .payments-section {
+            padding: 16px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .payment-count {
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .payment-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .payment-header {
+            padding: 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .payment-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .payment-body {
+            padding: 16px;
+        }
+        
+        .customer-info {
+            margin-bottom: 12px;
+        }
+        
+        .customer-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .customer-details {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 2px;
+        }
+        
+        .payment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .detail-item {
+            text-align: center;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .amount { color: #28a745; }
+        .paid { color: #17a2b8; }
+        
+        .detail-label {
+            font-size: 10px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+        
+        .payment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .completed-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 10px;
+            color: #6c757d;
+            padding: 8px 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .nav-item.active {
+            color: #ff6b35;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: 4px;
+            margin: 0 auto 4px;
+            opacity: 0.7;
+        }
+        
+        .nav-item.active .nav-icon {
+            opacity: 1;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #ff6b35;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="back-button">←</div>
+                <div class="logo">Caterer Name</div>
+            </div>
+            <div class="menu-icon">⋮</div>
+        </div>
+        
+        <!-- Page Title -->
+        <div class="page-title">
+            <div class="title-text">Payment Management</div>
+            <div class="title-subtitle">View Payments filtered by menu date</div>
+        </div>
+        
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon amount">£</div>
+                    <div class="stat-value">£24.00</div>
+                    <div class="stat-label">Total Amount</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon completed">✓</div>
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            
+            <div class="stat-card full-width">
+                <div class="stat-icon orders">📦</div>
+                <div class="stat-value">2</div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+        </div>
+        
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filter-row">
+                <div class="filter-item">
+                    <div class="filter-label">Menu Date</div>
+                    <input type="date" class="filter-input" value="2025-09-26">
+                </div>
+            </div>
+            
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Customer name, phone, or order ID">
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-item">
+                    <div class="filter-label">Payment Status</div>
+                    <select class="filter-select">
+                        <option>All Status</option>
+                        <option>Completed</option>
+                        <option>Pending</option>
+                        <option>Failed</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <div class="filter-label">Payment Method</div>
+                    <select class="filter-select">
+                        <option>All Status</option>
+                        <option>Cash</option>
+                        <option>Card</option>
+                        <option>Online</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="refresh-btn">🔄 Refresh</button>
+        </div>
+        
+        <!-- Payments List -->
+        <div class="payments-section">
+            <div class="section-header">
+                <div class="section-title">Payments</div>
+                <div class="payment-count">2 payments</div>
+            </div>
+            
+            <!-- Payment Card 1 -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <div class="order-number">Order #1007</div>
+                    <div class="payment-status">completed</div>
+                </div>
+                
+                <div class="payment-body">
+                    <div class="customer-info">
+                        <div class="customer-name">👤 Akshay</div>
+                        <div class="customer-details">📞 7778877878</div>
+                        <div class="customer-details">📍 26 Redmaison Road</div>
+                    </div>
+                    
+                    <div class="payment-details">
+                        <div class="detail-item">
+                            <div class="detail-value amount">£16.00</div>
+                            <div class="detail-label">Amount</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value paid">£16.00</div>
+                            <div class="detail-label">Paid</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-meta">
+                    <span>Sep 24, 2025, 12:04:07 PM</span>
+                    <span class="completed-badge">✓ Completed</span>
+                </div>
+            </div>
+            
+            <!-- Payment Card 2 -->
+            <div class="payment-card">
+                <div class="payment-header">
+                    <div class="order-number">Order #1006</div>
+                    <div class="payment-status">completed</div>
+                </div>
+                
+                <div class="payment-body">
+                    <div class="customer-info">
+                        <div class="customer-name">👤 Ashok</div>
+                        <div class="customer-details">📞 07774455678</div>
+                        <div class="customer-details">📍 pickup</div>
+                    </div>
+                    
+                    <div class="payment-details">
+                        <div class="detail-item">
+                            <div class="detail-value amount">£8.00</div>
+                            <div class="detail-label">Amount</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value paid">£8.00</div>
+                            <div class="detail-label">Paid</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-meta">
+                    <span>N/A</span>
+                    <span class="completed-badge">✓ Completed</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Action Button -->
+        <button class="fab">💰</button>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Orders</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Menus</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon"></div>
+                <div>Payments</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

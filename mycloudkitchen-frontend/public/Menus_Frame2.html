@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Catalog App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .menu-icon {
+            width: 32px;
+            height: 32px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        /* Content */
+        .content {
+            padding: 16px;
+        }
+        
+        .intro-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .intro-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+        }
+        
+        /* Menu Card */
+        .menu-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .menu-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .menu-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .status-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .menu-date {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .card-actions {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .copy-link-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            width: 100%;
+        }
+        
+        .card-body {
+            padding: 16px;
+        }
+        
+        .section {
+            margin-bottom: 24px;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #333;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .item-price {
+            font-size: 15px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        /* Combo Items */
+        .combo-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 12px;
+            background: #fdfdfd;
+        }
+        
+        .combo-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .combo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .combo-title {
+            font-size: 15px;
+            font-weight: bold;
+            flex: 1;
+        }
+        
+        .combo-meta {
+            text-align: right;
+        }
+        
+        .combo-price {
+            font-size: 16px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .combo-type {
+            font-size: 10px;
+            color: #6c757d;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        
+        .combo-description {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .combo-details {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .detail-header {
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 2px;
+        }
+        
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 10px;
+            color: #6c757d;
+            padding: 8px 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .nav-item.active {
+            color: #ff6b35;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: 4px;
+            margin: 0 auto 4px;
+            opacity: 0.7;
+        }
+        
+        .nav-item.active .nav-icon {
+            opacity: 1;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #ff6b35;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Pull to Refresh Indicator */
+        .refresh-indicator {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="back-button">←</div>
+                <div class="logo">Caterer Name</div>
+            </div>
+            <div class="menu-icon">⋮</div>
+        </div>
+        
+        <!-- Pull to Refresh -->
+        <div class="refresh-indicator">
+            Pull to refresh menus
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Intro Section -->
+            <div class="intro-section">
+                <p class="intro-text">
+                    Discover our most popular and trending menu selections, carefully crafted by our expert chefs
+                </p>
+                <div class="action-buttons">
+                    <button class="btn btn-primary">View All Active Menus</button>
+                    <button class="btn btn-secondary">View Inactive Menus</button>
+                </div>
+            </div>
+            
+            <!-- Menu Card -->
+            <div class="menu-card">
+                <div class="card-header">
+                    <div class="menu-title-row">
+                        <h2 class="menu-title">26 Friday Menu</h2>
+                        <span class="status-badge">Active</span>
+                    </div>
+                    <div class="menu-date">📅 Sep 26, 2025</div>
+                </div>
+                
+                <div class="card-actions">
+                    <button class="copy-link-btn">📋 Copy Order Link</button>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Main Courses Section -->
+                    <div class="section">
+                        <h3 class="section-title">Main Courses</h3>
+                        
+                        <div class="menu-item">
+                            <span class="item-name">Chicken Noodles</span>
+                            <span class="item-price">£4.0</span>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <span class="item-name">Veg Noodles</span>
+                            <span class="item-price">£4.0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Combo Deals Section -->
+                    <div class="section">
+                        <h3 class="section-title">Combo Deals</h3>
+                        
+                        <div class="combo-item">
+                            <div class="combo-header">
+                                <div class="combo-title">Combo 2</div>
+                                <div class="combo-meta">
+                                    <div class="combo-price">£8.5</div>
+                                    <div class="combo-type">Combo Deal</div>
+                                </div>
+                            </div>
+                            
+                            <div class="combo-description">
+                                Veg Noodles + Chilly Paneer + Veg Manchurian
+                            </div>
+                            
+                            <div class="combo-details">
+                                <div class="detail-header">Includes:</div>
+                                <div class="detail-item">
+                                    <span>Veg Noodles × 1</span>
+                                    <span>£4 each</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Veg Manchurian × 1</span>
+                                    <span>£3 each</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Chilli Paneer × 1</span>
+                                    <span>£3 each</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="combo-item">
+                            <div class="combo-header">
+                                <div class="combo-title">Combo 1</div>
+                                <div class="combo-meta">
+                                    <div class="combo-price">£8.5</div>
+                                    <div class="combo-type">Combo Deal</div>
+                                </div>
+                            </div>
+                            
+                            <div class="combo-description">
+                                Veg Fried Rice + Veg manchurian + Chilli Paneer
+                            </div>
+                            
+                            <div class="combo-details">
+                                <div class="detail-header">Includes:</div>
+                                <div class="detail-item">
+                                    <span>Veg Fried Rice × 1</span>
+                                    <span>£4 each</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Veg Manchurian × 1</span>
+                                    <span>£3 each</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Chilli Paneer × 1</span>
+                                    <span>£3 each</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Action Button -->
+        <button class="fab">+</button>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Dashboard</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon"></div>
+                <div>Menus</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Orders</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Profile</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

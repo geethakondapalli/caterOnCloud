@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Review Management App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .menu-icon {
+            width: 32px;
+            height: 32px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        /* Page Title */
+        .page-title {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8a50 100%);
+            color: white;
+            padding: 20px 16px;
+        }
+        
+        .title-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .title-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* Tab Navigation */
+        .tab-navigation {
+            background: white;
+            padding: 0 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 2px;
+        }
+        
+        .tab-item {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            color: #6c757d;
+            cursor: pointer;
+        }
+        
+        .tab-item.active {
+            color: #ff6b35;
+            border-bottom-color: #ff6b35;
+        }
+        
+        .tab-count {
+            display: inline-block;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+        
+        .tab-item.active .tab-count {
+            background: rgba(255, 107, 53, 0.1);
+            color: #ff6b35;
+        }
+        
+        /* Reviews Section */
+        .reviews-section {
+            padding: 16px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .reviews-count {
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .review-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .review-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff6b35;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .reviewer-details {
+            flex: 1;
+        }
+        
+        .reviewer-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .review-date {
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+        
+        .star {
+            width: 14px;
+            height: 14px;
+            background: #ffc107;
+            border-radius: 2px;
+        }
+        
+        .rating-value {
+            font-size: 11px;
+            color: #6c757d;
+            margin-left: 4px;
+        }
+        
+        .review-content {
+            padding: 0 16px 16px 16px;
+        }
+        
+        .review-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .review-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            background: currentColor;
+            border-radius: 50%;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .btn-approve {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-reject {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            background: #e9ecef;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .empty-text {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 10px;
+            color: #6c757d;
+            padding: 8px 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .nav-item.active {
+            color: #ff6b35;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: 4px;
+            margin: 0 auto 4px;
+            opacity: 0.7;
+        }
+        
+        .nav-item.active .nav-icon {
+            opacity: 1;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #ff6b35;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Pull to Refresh */
+        .refresh-indicator {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="back-button">←</div>
+                <div class="logo">Caterer Name</div>
+            </div>
+            <div class="menu-icon">⋮</div>
+        </div>
+        
+        <!-- Page Title -->
+        <div class="page-title">
+            <div class="title-text">Review Management</div>
+            <div class="title-subtitle">Manage customer reviews and feedback</div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <div class="tab-item active">
+                All Reviews
+                <span class="tab-count">2</span>
+            </div>
+            <div class="tab-item">
+                Pending
+                <span class="tab-count">0</span>
+            </div>
+            <div class="tab-item">
+                Approved
+                <span class="tab-count">2</span>
+            </div>
+        </div>
+        
+        <!-- Pull to Refresh -->
+        <div class="refresh-indicator">
+            Pull to refresh reviews
+        </div>
+        
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <div class="section-header">
+                <div class="section-title">Customer Reviews</div>
+                <div class="reviews-count">2 reviews</div>
+            </div>
+            
+            <!-- Review Card 1 -->
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">S</div>
+                        <div class="reviewer-details">
+                            <div class="reviewer-name">Sam</div>
+                            <div class="review-date">Aug 27, 2025, 11:07 PM</div>
+                            <div style="display: flex; align-items: center; margin-top: 4px;">
+                                <div class="rating-stars">
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                </div>
+                                <span class="rating-value">(5/5)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="review-content">
+                    <div class="review-text">
+                        The food is good and i strongly recommend
+                    </div>
+                </div>
+                
+                <div class="review-actions">
+                    <div class="status-badge">
+                        <div class="status-icon"></div>
+                        Approved
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-delete">🗑 Delete</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review Card 2 -->
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">M</div>
+                        <div class="reviewer-details">
+                            <div class="reviewer-name">Madhu</div>
+                            <div class="review-date">Aug 27, 2025, 11:37 AM</div>
+                            <div style="display: flex; align-items: center; margin-top: 4px;">
+                                <div class="rating-stars">
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                    <div class="star"></div>
+                                </div>
+                                <span class="rating-value">(5/5)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="review-content">
+                    <div class="review-text">
+                        The food is awesome
+                    </div>
+                </div>
+                
+                <div class="review-actions">
+                    <div class="status-badge">
+                        <div class="status-icon"></div>
+                        Approved
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-delete">🗑 Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Action Button -->
+        <button class="fab">⭐</button>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Dashboard</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Orders</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Menus</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon"></div>
+                <div>Reviews</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

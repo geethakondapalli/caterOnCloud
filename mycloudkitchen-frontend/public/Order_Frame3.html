@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Order Management App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .mobile-container {
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .header-icon {
+            width: 32px;
+            height: 32px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        /* Page Title */
+        .page-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 16px;
+        }
+        
+        .title-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .title-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .title-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-bar {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8f9fa;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 16px;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .filter-item {
+            flex: 1;
+        }
+        
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 12px;
+            background: white;
+        }
+        
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-count {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            font-size: 11px;
+            background: white;
+            color: #6c757d;
+        }
+        
+        /* Orders List */
+        .orders-list {
+            padding: 16px;
+        }
+        
+        .order-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .order-header {
+            padding: 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .order-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-confirmed {
+            background: #cce7ff;
+            color: #0066cc;
+        }
+        
+        .order-body {
+            padding: 16px;
+        }
+        
+        .customer-info {
+            margin-bottom: 12px;
+        }
+        
+        .customer-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .customer-contact {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 2px;
+        }
+        
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .order-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .order-date {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-primary {
+            flex: 1;
+            padding: 10px 16px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .action-secondary {
+            padding: 10px 16px;
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-icon {
+            width: 60px;
+            height: 60px;
+            background: #e9ecef;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+        }
+        
+        .empty-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 16px;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 375px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            text-align: center;
+            font-size: 10px;
+            color: #6c757d;
+            padding: 8px 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .nav-item.active {
+            color: #ff6b35;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            background: currentColor;
+            border-radius: 4px;
+            margin: 0 auto 4px;
+            opacity: 0.7;
+        }
+        
+        .nav-item.active .nav-icon {
+            opacity: 1;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #ff6b35;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="back-button">←</div>
+                <div class="logo">Caterer Name</div>
+            </div>
+            <div class="header-actions">
+                <div class="header-icon">⬇</div>
+                <div class="header-icon">🖨</div>
+            </div>
+        </div>
+        
+        <!-- Page Title -->
+        <div class="page-title">
+            <div class="title-text">
+                <span class="title-icon"></span>
+                Manage Orders
+            </div>
+            <div class="title-subtitle">Process and track all customer orders</div>
+        </div>
+        
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search orders...">
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-item">
+                    <select class="filter-select">
+                        <option>All Statuses</option>
+                        <option>Delivered</option>
+                        <option>Confirmed</option>
+                        <option>Preparing</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <input type="date" class="filter-input" value="2025-09-26">
+                </div>
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-item">
+                    <select class="filter-select">
+                        <option>Newest First</option>
+                        <option>Oldest First</option>
+                        <option>Amount High to Low</option>
+                        <option>Amount Low to High</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-actions">
+                <div class="results-count">Showing 2 of 2 orders</div>
+                <div class="action-buttons">
+                    <button class="action-btn">Filter</button>
+                    <button class="action-btn">Clear</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Orders List -->
+        <div class="orders-list">
+            <!-- Order Card 1 -->
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-number">#1007</div>
+                    <div class="order-status status-delivered">Delivered</div>
+                </div>
+                
+                <div class="order-body">
+                    <div class="customer-info">
+                        <div class="customer-name">Akshay</div>
+                        <div class="customer-contact">📞 7778877878</div>
+                        <div class="customer-contact">✉️ geethakondapalli@gmail.com</div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-total">£16.00</div>
+                        <div class="order-date">
+                            Sep 24, 2025<br>
+                            <small>11:03</small>
+                        </div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="action-secondary">View Details</button>
+                        <button class="action-secondary">Contact</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Card 2 -->
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-number">#1006</div>
+                    <div class="order-status status-confirmed">Confirmed</div>
+                </div>
+                
+                <div class="order-body">
+                    <div class="customer-info">
+                        <div class="customer-name">Ashok</div>
+                        <div class="customer-contact">📞 07774455678</div>
+                        <div class="customer-contact">✉️ ashokd2@gmail.com</div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-total">£8.00</div>
+                        <div class="order-date">
+                            Sep 23, 2025<br>
+                            <small>16:31</small>
+                        </div>
+                    </div>
+                    
+                    <div class="order-actions">
+                        <button class="action-primary">Mark as Preparing</button>
+                        <button class="action-secondary">Contact</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Action Button -->
+        <button class="fab">+</button>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Dashboard</div>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon"></div>
+                <div>Orders</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Menus</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon"></div>
+                <div>Profile</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
